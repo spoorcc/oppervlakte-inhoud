@@ -1,0 +1,2484 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oppervlakte & Inhoud - Leerplatform voor Groep 7</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6C5CE7;
+            --secondary: #00CEC9;
+            --accent1: #FDCB6E;
+            --accent2: #E17055;
+            --accent3: #00B894;
+            --bg: #F0F3FF;
+            --card-bg: #FFFFFF;
+            --text: #2D3436;
+            --text-light: #636E72;
+            --shadow: 0 10px 40px rgba(108, 92, 231, 0.15);
+            --shadow-hover: 0 20px 60px rgba(108, 92, 231, 0.25);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.5;
+        }
+
+        .bg-pattern::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(108, 92, 231, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(0, 206, 201, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(253, 203, 110, 0.06) 0%, transparent 40%);
+            animation: bgFloat 20s ease-in-out infinite;
+        }
+
+        @keyframes bgFloat {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(-2%, -2%) rotate(1deg); }
+        }
+
+        header {
+            background: var(--card-bg);
+            padding: 20px 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            position: relative;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .logo h1 {
+            font-size: 1.6rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            background: var(--bg);
+            padding: 6px;
+            border-radius: 50px;
+        }
+
+        .tab {
+            padding: 12px 32px;
+            border: none;
+            background: transparent;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-light);
+            cursor: pointer;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 15px rgba(108, 92, 231, 0.4);
+        }
+
+        .tab:hover:not(.active) {
+            background: rgba(108, 92, 231, 0.1);
+        }
+
+        .stars {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            background: linear-gradient(135deg, var(--accent1), var(--accent2));
+            padding: 8px 20px;
+            border-radius: 50px;
+            color: white;
+            font-weight: 700;
+        }
+
+        .stars span {
+            font-size: 1.2rem;
+        }
+
+        .reset-btn {
+            background: rgba(255,255,255,0.3);
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-left: 8px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .reset-btn:hover {
+            background: rgba(255,255,255,0.5);
+            transform: rotate(180deg);
+        }
+
+        .settings-menu {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg);
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .settings-menu select {
+            padding: 6px 12px;
+            border: 2px solid var(--primary);
+            border-radius: 20px;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 700;
+            background: white;
+            color: var(--primary);
+            cursor: pointer;
+        }
+
+        .settings-menu select:focus {
+            outline: none;
+            border-color: var(--secondary);
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .welcome-banner {
+            text-align: center;
+            padding: 40px;
+            background: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent1), var(--accent2), var(--accent3));
+        }
+
+        .welcome-banner h2 {
+            font-size: 2rem;
+            margin-bottom: 12px;
+            color: var(--text);
+        }
+
+        .welcome-banner p {
+            font-size: 1.2rem;
+            color: var(--text-light);
+        }
+
+        .shapes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .shape-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 32px 24px;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .shape-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--card-color, var(--primary));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .shape-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .shape-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .shape-card.selected {
+            border: 3px solid var(--card-color, var(--primary));
+        }
+
+        .shape-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .shape-svg {
+            width: 100%;
+            height: 100%;
+            transition: transform 0.3s ease;
+        }
+
+        .shape-card:hover .shape-svg {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .shape-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+
+        .shape-card p {
+            font-size: 0.95rem;
+            color: var(--text-light);
+        }
+
+        .lesson-view {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .lesson-view.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .lesson-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .back-btn {
+            background: var(--card-bg);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .back-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .lesson-title {
+            flex: 1;
+        }
+
+        .lesson-title h2 {
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .lesson-title p {
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
+        .term-explanation {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 32px;
+            border-radius: 20px;
+            margin-bottom: 24px;
+            display: flex;
+            gap: 24px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .term-diagram {
+            flex: 1;
+            min-width: 250px;
+            max-width: 300px;
+        }
+
+        .term-diagram svg {
+            width: 100%;
+            height: auto;
+        }
+
+        .term-explanation h3 {
+            font-size: 1.5rem;
+            margin-bottom: 16px;
+        }
+
+        .term-explanation ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .term-explanation li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+            font-size: 1.1rem;
+        }
+
+        .term-explanation li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--accent1);
+            font-weight: bold;
+        }
+
+        .steps-container {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: var(--shadow);
+            margin-bottom: 32px;
+        }
+
+        .step {
+            display: flex;
+            gap: 24px;
+            padding: 24px 0;
+            border-bottom: 2px dashed var(--bg);
+            animation: slideIn 0.5s ease forwards;
+            opacity: 0;
+        }
+
+        .step:last-child {
+            border-bottom: none;
+        }
+
+        @keyframes slideIn {
+            to { opacity: 1; transform: translateX(0); }
+            from { opacity: 0; transform: translateX(-20px); }
+        }
+
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 800;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .step-content h3 {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+
+        .step-content p {
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        .formula-box {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-top: 16px;
+            display: inline-block;
+            animation: formulaPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes formulaPulse {
+            0%, 100% { box-shadow: 0 4px 15px rgba(108, 92, 231, 0.4); }
+            50% { box-shadow: 0 8px 30px rgba(108, 92, 231, 0.6); }
+        }
+
+        .definition-box {
+            background: #FFF9E6;
+            border-left: 4px solid var(--accent1);
+            padding: 16px 20px;
+            border-radius: 0 12px 12px 0;
+            margin: 12px 0;
+        }
+
+        .definition-box strong {
+            color: var(--accent2);
+        }
+
+        .calculator-section {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: var(--shadow);
+        }
+
+        .calculator-section h3 {
+            font-size: 1.5rem;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .question-card {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 32px;
+            border-radius: 20px;
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .question-card::before {
+            content: '❓';
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            font-size: 3rem;
+            opacity: 0.3;
+        }
+
+        .question-shape-preview {
+            width: 280px;
+            height: 280px;
+            margin: 0 auto 16px;
+            display: block;
+        }
+
+        .question-shape-preview svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .question-card h4 {
+            font-size: 1.3rem;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .question-values {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .question-value {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 700;
+        }
+
+        .answer-section {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .answer-section label {
+            font-weight: 600;
+        }
+
+        .answer-section input {
+            padding: 12px 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: rgba(255,255,255,0.9);
+            width: 150px;
+            transition: all 0.3s ease;
+        }
+
+        .answer-section input:focus {
+            outline: none;
+            border-color: white;
+        }
+
+        .answer-section input:disabled {
+            background: #ccc;
+            border-color: #999;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .chances-display {
+            margin-top: 12px;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .chances-display .hearts {
+            color: #E17055;
+            font-size: 1.2rem;
+        }
+
+        .question-result {
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: 12px;
+            display: none;
+        }
+
+        .question-result.show {
+            display: block;
+            animation: resultPop 0.5s ease;
+        }
+
+        .question-result.correct {
+            background: rgba(0, 184, 148, 0.2);
+            border: 2px solid #00B894;
+        }
+
+        .question-result.wrong {
+            background: rgba(225, 112, 85, 0.2);
+            border: 2px solid #E17055;
+        }
+
+        .question-result.solved {
+            background: white;
+            color: var(--text);
+        }
+
+        .new-question-btn {
+            background: var(--accent3);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .new-question-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 184, 148, 0.4);
+        }
+
+        .calculate-btn {
+            background: linear-gradient(135deg, var(--accent3), var(--secondary));
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 184, 148, 0.4);
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 184, 148, 0.5);
+        }
+
+        .solved-questions {
+            margin-top: 24px;
+        }
+
+        .solved-question {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--accent3);
+        }
+
+        .solved-question.wrong {
+            border-left: 4px solid var(--accent1);
+            background: linear-gradient(135deg, rgba(253, 203, 110, 0.15), rgba(253, 203, 110, 0.05));
+        }
+
+        .solved-question.wrong .answer {
+            color: #D68910;
+        }
+
+        .solved-question h5 {
+            font-size: 1rem;
+            color: var(--text-light);
+            margin-bottom: 8px;
+        }
+
+        .solved-question .answer {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--accent3);
+        }
+
+        .solved-question .calculation {
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-top: 8px;
+            background: var(--bg);
+            padding: 8px 12px;
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        .solved-question .steps-explanation {
+            font-size: 0.9rem;
+            color: var(--text);
+            margin-top: 12px;
+            padding: 12px;
+            background: rgba(253, 203, 110, 0.15);
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+
+        .solved-question .steps-explanation strong {
+            color: #D68910;
+        }
+
+        .mascot {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 120px;
+            height: 120px;
+            z-index: 999;
+            cursor: pointer;
+            animation: mascotBounce 2s ease-in-out infinite;
+            transition: transform 0.3s ease;
+        }
+
+        .mascot svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .mascot:hover {
+            transform: scale(1.1);
+        }
+
+        .mascot.hidden {
+            display: none;
+        }
+
+        @keyframes mascotBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .mascot-speech {
+            position: absolute;
+            bottom: 130px;
+            right: 0;
+            background: var(--card-bg);
+            padding: 16px 20px;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            max-width: 280px;
+            font-size: 0.95rem;
+            animation: speechPop 0.3s ease;
+        }
+
+        .mascot-speech::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            right: 30px;
+            border: 10px solid transparent;
+            border-top-color: var(--card-bg);
+        }
+
+        @keyframes speechPop {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            pointer-events: none;
+            z-index: 9999;
+            animation: confettiFall 3s ease-out forwards;
+        }
+
+        @keyframes confettiFall {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        footer {
+            text-align: center;
+            padding: 32px;
+            color: var(--text-light);
+            position: relative;
+            z-index: 1;
+        }
+
+        .flappy-inpage {
+            display: none;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border-radius: 20px;
+            padding: 24px;
+            margin-top: 24px;
+            text-align: center;
+            position: relative;
+        }
+
+        .flappy-inpage.active {
+            display: block;
+        }
+
+        .flappy-inpage .flappy-close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .flappy-inpage h2 {
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .flappy-stats {
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+            margin-bottom: 10px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .flappy-stats span:first-child {
+            color: #E17055;
+        }
+
+        .flappy-canvas {
+            border: 4px solid var(--primary);
+            border-radius: 12px;
+            background: linear-gradient(to bottom, #87CEEB, #E0F6FF);
+        }
+
+        .flappy-instructions {
+            color: white;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 16px 20px;
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .logo h1 {
+                font-size: 1.3rem;
+            }
+
+            .tabs {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .tab {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+
+            .settings-menu {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .welcome-banner {
+                padding: 24px;
+            }
+
+            .welcome-banner h2 {
+                font-size: 1.5rem;
+            }
+
+            .shapes-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 16px;
+            }
+
+            .shape-card {
+                padding: 20px 16px;
+            }
+
+            .shape-icon {
+                width: 70px;
+                height: 70px;
+            }
+
+            .shape-card h3 {
+                font-size: 1.1rem;
+            }
+
+            .term-explanation {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .term-explanation ul {
+                text-align: left;
+            }
+
+            .lesson-header {
+                flex-wrap: wrap;
+            }
+
+            .lesson-title h2 {
+                font-size: 1.4rem;
+            }
+
+            .steps-container, .calculator-section {
+                padding: 24px;
+            }
+
+            .step {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .mascot {
+                width: 80px;
+                height: 80px;
+                bottom: 20px;
+                right: 20px;
+            }
+
+            .mascot-speech {
+                max-width: 200px;
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .shapes-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-pattern"></div>
+    
+    <header>
+        <div class="logo">
+            <div class="logo-icon">
+                <svg width="40" height="40" viewBox="0 0 100 100">
+                    <rect x="10" y="10" width="80" height="80" rx="15" fill="#3498DB"/>
+                    <circle cx="32" cy="40" r="8" fill="white"/>
+                    <circle cx="68" cy="40" r="8" fill="white"/>
+                    <circle cx="34" cy="40" r="4" fill="#2D3436"/>
+                    <circle cx="70" cy="40" r="4" fill="#2D3436"/>
+                    <path d="M 35 70 Q 50 80 65 70" stroke="#2D3436" stroke-width="4" fill="none" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <h1>Oppervlakte & Inhoud</h1>
+        </div>
+        <div class="tabs">
+            <button class="tab active" data-tab="oppervlakte">
+                <span>📏</span> Oppervlakte
+            </button>
+            <button class="tab" data-tab="inhoud">
+                <span>📦</span> Inhoud
+            </button>
+        </div>
+        <div class="stars">
+            <span>⭐</span>
+            <span id="starCount">0</span> sterren
+            <button class="reset-btn" onclick="resetProgress()" title="Reset alle voortgang">♻️</button>
+        </div>
+        <div class="settings-menu">
+            <label>π = </label>
+            <select id="piSetting">
+                <option value="3">3</option>
+                <option value="3.14" selected>3,14</option>
+            </select>
+        </div>
+    </header>
+
+    <main>
+        <div class="welcome-banner" id="welcomeBanner">
+            <h2>Welkom bij Oppervlakte & Inhoud!</h2>
+            <p>Kies hieronder een vorm om te leren hoe je de oppervlakte of inhoud berekent. Veel succes! 🎉</p>
+        </div>
+
+        <div class="shapes-grid" id="shapesGrid"></div>
+
+        <div class="lesson-view" id="lessonView">
+            <div class="lesson-header">
+                <button class="back-btn" id="backBtn">←</button>
+                <div class="lesson-title">
+                    <h2 id="lessonTitle"></h2>
+                    <p id="lessonSubtitle"></p>
+                </div>
+            </div>
+
+            <div class="term-explanation" id="termExplanation"></div>
+
+            <div class="steps-container" id="stepsContainer"></div>
+
+            <div class="calculator-section">
+                <h3>📝 Nu jij! Oefen met een vraag</h3>
+                <div class="question-card" id="questionCard">
+                    <div class="question-shape-preview" id="questionShapePreview"></div>
+                    <h4 id="questionTitle">Vraag</h4>
+                    <div class="question-values" id="questionValues"></div>
+                    <div class="answer-section">
+                        <label>Jouw antwoord:</label>
+                        <input type="number" id="answerInput" placeholder="Type hier je antwoord" step="0.01">
+                        <button class="calculate-btn" id="checkAnswerBtn">Controleer!</button>
+                    </div>
+                    <div class="chances-display" id="chancesDisplay"></div>
+                    <div class="question-result" id="questionResult"></div>
+                </div>
+                <div class="solved-questions" id="solvedQuestions">
+                    <h4 style="margin-bottom: 16px; color: var(--text-light);">📋 Vorige vragen:</h4>
+                    <div id="solvedList"></div>
+                </div>
+            </div>
+            
+            <div class="flappy-inpage" id="flappyInpage">
+                <button class="flappy-close-btn" onclick="closeFlappyGame()">✕</button>
+                <h2>🐦 Flappy Vorm!</h2>
+                <div class="flappy-stats">
+                    <span id="flappyLivesInpage">❤️❤️❤️❤️❤️</span>
+                    <span id="flappyScoreInpage">Score: 0</span>
+                </div>
+                <canvas class="flappy-canvas" id="flappyCanvasInpage" width="350" height="450"></canvas>
+                <div class="flappy-instructions" id="flappyStartMsgInpage">Klik of druk op spatie om te vliegen!</div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>Leer stap voor stap hoe je oppervlakte en inhoud berekent. Veel succes! 🚀</p>
+        <p style="margin-top: 10px; font-size: 0.85rem;">Gemaakt door Loek & Thieme</p>
+    </footer>
+
+    <script>
+        const shapes = {
+            oppervlakte: [
+                {
+                    id: 'vierkant',
+                    name: 'Vierkant',
+                    color: '#6C5CE7',
+                    description: 'Alle kanten zijn even lang!',
+                    inputs: [
+                        { id: 'zijde', label: 'Zijde (cm)', hint: 'De lengte van één kant', placeholder: 'Bijv. 5' }
+                    ],
+                    formula: 'zijde × zijde',
+                    calculate: (v) => v.zijde * v.zijde,
+                    termDiagram: `
+                        <svg viewBox="0 0 200 200">
+                            <rect x="30" y="30" width="140" height="140" fill="#6C5CE7" rx="8" opacity="0.3"/>
+                            <rect x="30" y="30" width="140" height="140" fill="none" stroke="#6C5CE7" stroke-width="4" rx="8"/>
+                            <line x1="30" y1="20" x2="170" y2="20" stroke="#6C5CE7" stroke-width="3" marker-end="url(#arrow)"/>
+                            <line x1="20" y1="30" x2="20" y2="170" stroke="#6C5CE7" stroke-width="3"/>
+                            <text x="100" y="15" text-anchor="middle" fill="#6C5CE7" font-weight="bold">5 cm</text>
+                            <text x="10" y="100" text-anchor="middle" fill="#6C5CE7" font-weight="bold" transform="rotate(-90, 10, 100)">5 cm</text>
+                            <defs>
+                                <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                                    <path d="M0,0 L0,6 L9,3 z" fill="#6C5CE7"/>
+                                </marker>
+                            </defs>
+                        </svg>
+                    `,
+                    termInfo: {
+                        title: 'Wat is een zijde?',
+                        terms: [
+                            '<strong>Zijde:</strong> De zijde is één van de vier gelijke kanten van een vierkant. Omdat alle kanten even lang zijn, hoef je maar één kant te meten!',
+                            '<strong>Oppervlakte:</strong> Dat is de grootte van het vlak. Hoeveel vierkante centimeter past erin?',
+                            '<strong>cm²:</strong> Dit is de eenheid voor oppervlakte. Je schrijft het als "cm kwadraat"'
+                        ]
+                    },
+                    steps: [
+                        { title: 'Wat is een vierkant?', content: 'Een vierkant is een figuur met 4 hoeken. De bijzondere eigenschap is dat ALLE 4 kanten precies even lang zijn! Denk aan een tegel op de vloer of een foto die je neerzet.' },
+                        { title: 'Wat is een zijde?', content: 'De zijde is de lengte van één kant van het vierkant. Omdat alle kanten gelijk zijn, is de zijde overal hetzelfde!' },
+                        { title: 'De formule', content: 'Om de oppervlakte te berekenen vermenigvuldig je de zijde met zichzelf. Dit noem je ook wel "in het kwadraat" nemen.', formula: 'Oppervlakte = zijde × zijde' },
+                        { title: 'Voorbeeld', content: 'Als de zijde 5 cm is: 5 × 5 = 25 cm²', formula: '25 cm²' },
+                        { title: 'Uitleg watermethode', content: 'Stel je voor dat je vierkant is als een zwembad. Als je de zijde met 5 cm vermenigvuldigt, weet je hoeveel water (oppervlakte) erin kan! 🏊' }
+                    ],
+                    svg: `<rect x="20" y="20" width="60" height="60" fill="#6C5CE7" rx="8"/><text x="50" y="55" text-anchor="middle" fill="white" font-size="14" font-weight="bold">a²</text>`
+                },
+                {
+                    id: 'rechthoek',
+                    name: 'Rechthoek',
+                    color: '#00CEC9',
+                    description: 'Twee lange en twee korte kanten!',
+                    inputs: [
+                        { id: 'lengte', label: 'Lengte (cm)', hint: 'De langste kant', placeholder: 'Bijv. 8' },
+                        { id: 'breedte', label: 'Breedte (cm)', hint: 'De kortste kant', placeholder: 'Bijv. 4' }
+                    ],
+                    formula: 'lengte × breedte',
+                    calculate: (v) => v.lengte * v.breedte,
+                    termDiagram: `
+                        <svg viewBox="0 0 220 160">
+                            <rect x="20" y="30" width="180" height="100" fill="#00CEC9" opacity="0.3"/>
+                            <rect x="20" y="30" width="180" height="100" fill="none" stroke="#00CEC9" stroke-width="4"/>
+                            <line x1="20" y1="15" x2="200" y2="15" stroke="#00CEC9" stroke-width="3"/>
+                            <line x1="20" y1="15" x2="30" y2="25" stroke="#00CEC9" stroke-width="2"/>
+                            <line x1="200" y1="15" x2="190" y2="25" stroke="#00CEC9" stroke-width="2"/>
+                            <text x="110" y="10" text-anchor="middle" fill="#00CEC9" font-weight="bold">lengte = 8 cm</text>
+                            <line x1="5" y1="30" x2="5" y2="130" stroke="#00CEC9" stroke-width="3"/>
+                            <line x1="5" y1="30" x2="15" y2="40" stroke="#00CEC9" stroke-width="2"/>
+                            <line x1="5" y1="130" x2="15" y2="120" stroke="#00CEC9" stroke-width="2"/>
+                            <text x="25" y="85" text-anchor="middle" fill="#00CEC9" font-weight="bold" transform="rotate(-90, 25, 85)">breedte = 4 cm</text>
+                        </svg>
+                    `,
+                    termInfo: {
+                        title: 'Wat zijn lengte en breedte?',
+                        terms: [
+                            '<strong>Lengte:</strong> Dit is de langste kant van de rechthoek. Meet altijd eerst de lengte!',
+                            '<strong>Breedte:</strong> Dit is de kortere kant, ook wel de "dwars" kant genoemd.',
+                            '<strong>Rechthoek:</strong> Een figuur met 4 rechte hoeken van 90 graden. Denk aan een deur of een boek.',
+                            '<strong>cm²:</strong> De eenheid voor oppervlakte. Zeg maar "cm kwadraat"'
+                        ]
+                    },
+                    steps: [
+                        { title: 'Wat is een rechthoek?', content: 'Een rechthoek is een figuur met 4 hoeken. Anders dan bij het vierkant, zijn de overstaande kanten wel gelijk, maar de lengte en breedte zijn verschillend! Denk aan een deur of een boek.' },
+                        { title: 'Lengte en breedte', content: 'De <strong>lengte</strong> is de langste kant. De <strong>breedte</strong> is de kortere kant. Samen vormen ze een rechthoek!' },
+                        { title: 'De formule', content: 'Vermenigvuldig de lengte met de breedte om de oppervlakte te krijgen.', formula: 'Oppervlakte = lengte × breedte' },
+                        { title: 'Voorbeeld', content: 'Lengte 8 cm, breedte 4 cm: 8 × 4 = 32 cm²', formula: '32 cm²' },
+                        { title: 'Makkelijke tip', content: 'Denk aan een rechthoek als een tennisveld! De lengte is de lange kant van het veld, de breedte is de korte kant. 🎾' }
+                    ],
+                    svg: `<rect x="15" y="30" width="70" height="45" fill="#00CEC9" rx="4"/><text x="50" y="55" text-anchor="middle" fill="white" font-size="11" font-weight="bold">l × b</text>`
+                },
+                {
+                    id: 'driehoek',
+                    name: 'Driehoek',
+                    color: '#FDCB6E',
+                    description: 'Drie hoeken en drie kanten!',
+                    inputs: [
+                        { id: 'basis', label: 'Basis (cm)', hint: 'De onderste kant', placeholder: 'Bijv. 6' },
+                        { id: 'hoogte', label: 'Hoogte (cm)', hint: 'Lijn van top naar basis', placeholder: 'Bijv. 4' }
+                    ],
+                    formula: '(basis × hoogte) ÷ 2',
+                    calculate: (v) => (v.basis * v.hoogte) / 2,
+                    termDiagram: `
+                        <svg viewBox="0 0 200 180">
+                            <polygon points="20,150 180,150 100,20" fill="#FDCB6E" opacity="0.3"/>
+                            <polygon points="20,150 180,150 100,20" fill="none" stroke="#FDCB6E" stroke-width="4"/>
+                            <line x1="100" y1="20" x2="100" y2="150" stroke="#E17055" stroke-width="3" stroke-dasharray="8,4"/>
+                            <line x1="90" y1="150" x2="110" y2="150" stroke="#E17055" stroke-width="3"/>
+                            <text x="100" y="10" text-anchor="middle" fill="#E17055" font-weight="bold">top</text>
+                            <text x="100" y="170" text-anchor="middle" fill="#FDCB6E" font-weight="bold">basis = 6 cm</text>
+                            <text x="130" y="90" text-anchor="middle" fill="#E17055" font-weight="bold">hoogte = 4 cm</text>
+                            <circle cx="20" cy="150" r="5" fill="#FDCB6E"/>
+                            <circle cx="180" cy="150" r="5" fill="#FDCB6E"/>
+                            <circle cx="100" cy="20" r="5" fill="#FDCB6E"/>
+                        </svg>
+                    `,
+                    termInfo: {
+                        title: 'Wat zijn basis en hoogte?',
+                        terms: [
+                            '<strong>Basis:</strong> Dit is de onderste kant van de driehoek. Je kunt elke kant als basis kiezen, maar meestal kies je de horizontale onderkant.',
+                            '<strong>Hoogte:</strong> Dit is de afstand van de top (bovenste punt) loodrecht naar de basis. Het is een denkbeeldige lijn die recht naar beneden gaat!',
+                            '<strong>Top:</strong> Het bovenste puntje van de driehoek waar twee zijden samenkomen.',
+                            '<strong>Loodrecht:</strong> Een andere naam hiervoor is "haakse hoek". De hoogte staat perfect recht naar beneden, net als bij een gebouw!'
+                        ]
+                    },
+                    steps: [
+                        { title: 'Wat is een driehoek?', content: 'Een driehoek heeft precies 3 hoeken en 3 zijden. Daarom heet het ook "drie"hoek! Je ziet driehoeken overal: in verkeersborden, daken van huizen, en taartpunten!' },
+                        { title: 'Wat is de basis?', content: 'De <strong>basis</strong> is meestal de horizontale onderkant van de driehoek. Dit is de "grond" waar de driehoek op staat!' },
+                        { title: 'Wat is de hoogte?', content: 'De <strong>hoogte</strong> is de afstand van de top (bovenste punt) recht naar beneden naar de basis. Het is alsof je een lijn trekt van het dak naar de grond!' },
+                        { title: 'De formule', content: 'Eerst vermenigvuldig je de basis met de hoogte. Daarna deel je door 2 (ofwel: je neemt de helft).', formula: 'Oppervlakte = (basis × hoogte) ÷ 2' },
+                        { title: 'Voorbeeld', content: 'Basis 6 cm, hoogte 4 cm: (6 × 4) ÷ 2 = 12 cm²', formula: '12 cm²' },
+                        { title: 'Waarom delen door 2?', content: 'Als je een rechthoek hebt met dezelfde basis en hoogte, past er PRECIES TWEE driehoeken in! Daarom nemen we de helft. 🔺' }
+                    ],
+                    svg: `<polygon points="50,15 90,85 10,85" fill="#FDCB6E"/><text x="50" y="60" text-anchor="middle" fill="#2D3436" font-size="10" font-weight="bold">b×h÷2</text>`
+                },
+                {
+                    id: 'cirkel',
+                    name: 'Cirkel',
+                    color: '#E17055',
+                    description: 'Rond als een pizza!',
+                    inputs: [
+                        { id: 'straal', label: 'Straal (cm)', hint: 'Van midden naar rand', placeholder: 'Bijv. 3' }
+                    ],
+                    formula: 'π × r × r',
+                    calculate: (v) => Math.PI * v.straal * v.straal,
+                    termDiagram: `
+                        <svg viewBox="0 0 200 200">
+                            <circle cx="100" cy="100" r="80" fill="#E17055" opacity="0.3"/>
+                            <circle cx="100" cy="100" r="80" fill="none" stroke="#E17055" stroke-width="4"/>
+                            <circle cx="100" cy="100" r="5" fill="#E17055"/>
+                            <line x1="100" y1="100" x2="180" y2="100" stroke="#2D3436" stroke-width="3"/>
+                            <line x1="20" y1="100" x2="180" y2="100" stroke="#6C5CE7" stroke-width="2" stroke-dasharray="6,4"/>
+                            <text x="140" y="90" fill="#2D3436" font-weight="bold" font-size="12">straal (r)</text>
+                            <text x="55" y="115" fill="#6C5CE7" font-weight="bold" font-size="11">diameter = 2 × r</text>
+                            <text x="100" y="195" text-anchor="middle" fill="#E17055" font-weight="bold">diameter = 6 cm</text>
+                            <text x="100" y="60" text-anchor="middle" fill="#2D3436" font-weight="bold">M</text>
+                        </svg>
+                    `,
+                    termInfo: {
+                        title: 'Wat zijn straal en diameter?',
+                        terms: [
+                            '<strong>Straal (r):</strong> Dit is de afstand van het midden van de cirkel naar de rand. Meet dit altijd vanuit het MIDDEN!',
+                            '<strong>Diameter:</strong> Dit is de afstand van de ene rand naar de andere kant, helemaal door het midden. De diameter is 2× zo groot als de straal!',
+                            '<strong>π (pi):</strong> Een bijzonder getal dat altijd ongeveer 3,14 is. Dit getal heb je nodig bij alle cirkelberekeningen!',
+                            '<strong>Omtrek:</strong> De totale afstand rondom de cirkel. Dit is π × diameter.',
+                            '<strong>cm²:</strong> De eenheid voor oppervlakte'
+                        ]
+                    },
+                    steps: [
+                        { title: 'Wat is een cirkel?', content: 'Een cirkel is helemaal rond en heeft geen hoeken! Anders dan een vierkant of driehoek, is de cirkel overal even ver van het midden. Denk aan een wiel, een pizza, of de zon! ☀️' },
+                        { title: 'Wat is het midden (M)?', content: 'Het <strong>midden</strong> van de cirkel is precies hetzelfde punt als je aan alle kanten even ver bent. Dit noemen we ook wel het "centrum".' },
+                        { title: 'Wat is de straal?', content: 'De <strong>straal</strong> (ook wel "radius" genoemd) is de afstand van het midden naar de rand. Dit is de helft van de diameter! Meet dit altijd met een liniaal vanuit het midden.' },
+                        { title: 'Wat is de diameter?', content: 'De <strong>diameter</strong> is de afstand van de ene rand naar de andere, via het midden. De diameter is precies 2× de straal! Als de straal 3 cm is, is de diameter 6 cm.' },
+                        { title: 'De formule', content: 'Gebruik het getal π (pi) ongeveer 3,14. Vermenigvuldig de straal met zichzelf en dan met 3,14.', formula: 'Oppervlakte = π × r × r' },
+                        { title: 'Voorbeeld', content: 'Straal 3 cm: 3,14 × 3 × 3 = 28,26 cm²', formula: '≈ 28,26 cm²' },
+                        { title: 'Hoe onthoud je π?', content: 'Onthoud: "Pak je弟弟 Piet, dan heb je 3,14 nodig" of gewoon onthouden dat π ongeveer 3 is en een beetje. Veel makkelijker: gebruik de π knop op je rekenmachine! 🔢' }
+                    ],
+                    svg: `<circle cx="50" cy="50" r="35" fill="#E17055"/><circle cx="50" cy="50" r="3" fill="white"/><line x1="50" y1="50" x2="85" y2="50" stroke="white" stroke-width="2"/><text x="65" y="45" fill="white" font-size="8" font-weight="bold">r</text>`
+                }
+            ],
+            inhoud: [
+                {
+                    id: 'kubus',
+                    name: 'Kubus',
+                    color: '#00B894',
+                    description: 'Alle ribben zijn even lang!',
+                    inputs: [
+                        { id: 'zijde', label: 'Zijde/Ribbe (cm)', hint: 'Lengte van één rand', placeholder: 'Bijv. 4' }
+                    ],
+                    formula: 'zijde × zijde × zijde',
+                    calculate: (v) => v.zijde * v.zijde * v.zijde,
+                    termDiagram: `
+                        <svg viewBox="0 0 220 200">
+                            <rect x="40" y="50" width="120" height="100" fill="#00B894" opacity="0.3"/>
+                            <polygon points="40,50 80,20 200,20 160,50" fill="#00A884" opacity="0.5"/>
+                            <polygon points="160,50 200,20 200,120 160,150" fill="#00886E" opacity="0.5"/>
+                            <rect x="40" y="50" width="120" height="100" fill="none" stroke="#00B894" stroke-width="3"/>
+                            <polygon points="40,50 80,20 200,20 160,50" fill="none" stroke="#00B894" stroke-width="3"/>
+                            <polygon points="160,50 200,20 200,120 160,150" fill="none" stroke="#00B894" stroke-width="3"/>
+                            <text x="110" y="105" text-anchor="middle" fill="#2D3436" font-weight="bold" font-size="11">zijde = 4 cm</text>
+                            <line x1="80" y1="20" x2="160" y2="50" stroke="#2D3436" stroke-width="1" stroke-dasharray="3,3"/>
+                            <line x1="40" y1="150" x2="160" y2="150" stroke="#2D3436" stroke-width="1" stroke-dasharray="3,3"/>
+                        </svg>
+                    `,
+                    termInfo: {
+                        title: 'Wat is een kubus?',
+                        terms: [
+                            '<strong>Ribbe/Zijde:</strong> Een ribbe is de rand van de kubus. Omdat alle ribben even lang zijn, hoef je er maar één te meten!',
+                            '<strong>Inhoud:</strong> Dat is hoeveel er IN de kubus past. Meet je in kubieke centimeters (cm³)!',
+                            '<strong>cm³:</strong> Dit is de eenheid voor inhoud. Zeg maar "cm tot de derde" of "cm kubiek"'
+                        ]
+                    },
+                    steps: [
+                        { title: 'Wat is een kubus?', content: 'Een kubus is een heel speciale doos! Het is een driedimensionale vorm waarbij ALLE ribben (randen) even lang zijn. Denk aan een dobbelsteen of een suikerklontje! 🎲' },
+                        { title: 'Wat is een ribbe?', content: 'Een <strong>ribbe</strong> is één van de randen van de kubus. Omdat alle ribben even lang zijn, is de zijde overal hetzelfde!' },
+                        { title: 'De formule', content: 'Om de inhoud te berekenen vermenigvuldig je de zijde drie keer met zichzelf. Dit heet "tot de derde macht" of "in de derde".', formula: 'Inhoud = zijde × zijde × zijde' },
+                        { title: 'Voorbeeld', content: 'Als de zijde 4 cm is: 4 × 4 × 4 = 64 cm³', formula: '64 cm³' },
+                        { title: 'Makkelijke tip', content: 'Een kubus is eigenlijk een heel speciale doos. Als je de zijde weet, hoef je maar drie keer te vermenigvuldigen! 📦' }
+                    ],
+                    svg: `<rect x="20" y="25" width="60" height="50" fill="#00B894"/><polygon points="20,25 40,5 100,5 80,25" fill="#00A884"/><polygon points="80,25 100,5 100,55 80,75" fill="#00886E"/>`
+                },
+                {
+                    id: 'blok',
+                    name: 'Blok',
+                    color: '#0984E3',
+                    description: 'Een rechthoekige doos!',
+                    inputs: [
+                        { id: 'lengte', label: 'Lengte (cm)', hint: 'De langste kant', placeholder: 'Bijv. 8' },
+                        { id: 'breedte', label: 'Breedte (cm)', hint: 'De middelste kant', placeholder: 'Bijv. 5' },
+                        { id: 'hoogte', label: 'Hoogte (cm)', hint: 'De vertikale kant', placeholder: 'Bijv. 4' }
+                    ],
+                    formula: 'lengte × breedte × hoogte',
+                    calculate: (v) => v.lengte * v.breedte * v.hoogte,
+                    termDiagram: `
+                        <svg viewBox="0 0 220 180">
+                            <rect x="30" y="50" width="140" height="80" fill="#0984E3" opacity="0.3"/>
+                            <polygon points="30,50 60,20 200,20 170,50" fill="#0873C9" opacity="0.5"/>
+                            <polygon points="170,50 200,20 200,100 170,130" fill="#0662A8" opacity="0.5"/>
+                            <rect x="30" y="50" width="140" height="80" fill="none" stroke="#0984E3" stroke-width="3"/>
+                            <polygon points="30,50 60,20 200,20 170,50" fill="none" stroke="#0984E3" stroke-width="3"/>
+                            <polygon points="170,50 200,20 200,100 170,130" fill="none" stroke="#0984E3" stroke-width="3"/>
+                            <text x="100" y="95" text-anchor="middle" fill="#2D3436" font-weight="bold" font-size="10">8 × 5 × 4 cm</text>
+                        </svg>
+                    `,
+                    termInfo: {
+                        title: 'Wat zijn lengte, breedte en hoogte?',
+                        terms: [
+                            '<strong>Lengte:</strong> Dit is de langste kant van het blok. Meet eerst de lengte!',
+                            '<strong>Breedte:</strong> Dit is de middelste kant, de "dwars" kant.',
+                            '<strong>Hoogte:</strong> Dit is hoe hoog het blok is - de verticale kant!',
+                            '<strong>cm³:</strong> De eenheid voor inhoud. Zeg maar "cm kubiek"'
+                        ]
+                    },
+                    steps: [
+                        { title: 'Wat is een blok?', content: 'Een blok is als een rechthoekige doos! Het heeft 3 verschillende maten: lengte, breedte en hoogte. Denk aan een shoelade doos of een pak melk! 📦' },
+                        { title: 'De drie maten', content: 'Bij een blok heb je <strong>lengte</strong> (de langste kant), <strong>breedte</strong> (de middelste kant) en <strong>hoogte</strong> (hoe hoog het is).' },
+                        { title: 'De formule', content: 'Vermenigvuldig alle drie de maten met elkaar.', formula: 'Inhoud = lengte × breedte × hoogte' },
+                        { title: 'Voorbeeld', content: 'Lengte 8 cm, breedte 5 cm, hoogte 4 cm: 8 × 5 × 4 = 160 cm³', formula: '160 cm³' },
+                        { title: 'Makkelijke tip', content: 'Denk aan het blok als een kamer! Eerst bereken je de vloer (lengte × breedte), dan vermenigvuldig je met de hoogte! 🏠' }
+                    ],
+                    svg: `<rect x="15" y="30" width="70" height="45" fill="#0984E3" rx="2"/><polygon points="15,30 35,10 85,10 65,30" fill="#0873C9"/><polygon points="65,30 85,10 85,55 65,75" fill="#0662A8"/><text x="45" y="55" fill="white" font-size="9" font-weight="bold">l×b×h</text>`
+                },
+                {
+                    id: 'cilinder',
+                    name: 'Cilinder',
+                    color: '#E17055',
+                    description: 'Rond als een blikje!',
+                    inputs: [
+                        { id: 'straal', label: 'Straal (cm)', hint: 'Van midden naar rand', placeholder: 'Bijv. 3' },
+                        { id: 'hoogte', label: 'Hoogte (cm)', hint: 'Hoe hoog is het blikje?', placeholder: 'Bijv. 8' }
+                    ],
+                    formula: 'π × r × r × h',
+                    calculate: (v) => Math.PI * v.straal * v.straal * v.hoogte,
+                    termDiagram: `
+                        <svg viewBox="0 0 200 200">
+                            <ellipse cx="100" cy="160" rx="70" ry="20" fill="#E17055" opacity="0.3"/>
+                            <ellipse cx="100" cy="160" rx="70" ry="20" fill="none" stroke="#E17055" stroke-width="3"/>
+                            <rect x="30" y="40" width="140" height="120" fill="#E17055" opacity="0.3"/>
+                            <rect x="30" y="40" width="140" height="120" fill="none" stroke="#E17055" stroke-width="3"/>
+                            <ellipse cx="100" cy="40" rx="70" ry="20" fill="#E17055" opacity="0.5"/>
+                            <ellipse cx="100" cy="40" rx="70" ry="20" fill="none" stroke="#E17055" stroke-width="3"/>
+                            <line x1="100" y1="40" x2="100" y2="160" stroke="#C15F45" stroke-width="2" stroke-dasharray="5,3"/>
+                            <text x="115" y="105" fill="#2D3436" font-weight="bold" font-size="11">8 cm</text>
+                            <text x="100" y="25" fill="#E17055" font-weight="bold" font-size="11">straal = 3 cm</text>
+                        </svg>
+                    `,
+                    termInfo: {
+                        title: 'Wat zijn straal en hoogte?',
+                        terms: [
+                            '<strong>Straal (r):</strong> Dit is de afstand van het midden van de bodem naar de rand. Meet dit altijd vanuit het midden!',
+                            '<strong>Hoogte (h):</strong> Dit is hoe hoog de cilinder is - van de bodem tot de bovenkant!',
+                            '<strong>π (pi):</strong> Ongeveer 3,14. Dit getal heb je nodig voor alle cirkelberekeningen!',
+                            '<strong>cm³:</strong> De eenheid voor inhoud'
+                        ]
+                    },
+                    steps: [
+                        { title: 'Wat is een cilinder?', content: 'Een cilinder is een heel speciale vorm! Het is rond als een cirkel, maar heeft een hoogte. Denk aan een blikje cola, een wc-rolletje of een vuilnisbak! 🥫' },
+                        { title: 'De bodem', content: 'De bodem van een cilinder is een <strong>cirkel</strong>. Daarom gebruik je π om de oppervlakte te berekenen!' },
+                        { title: 'De formule', content: 'Eerst bereken je de oppervlakte van de bodem (π × r × r). Daarna vermenigvuldig je met de hoogte!', formula: 'Inhoud = π × r × r × hoogte' },
+                        { title: 'Voorbeeld', content: 'Straal 3 cm, hoogte 8 cm: 3,14 × 3 × 3 × 8 = 226,08 cm³', formula: '≈ 226 cm³' },
+                        { title: 'Hoe werkt het?', content: 'Stel je voor dat je een blikje hebt. Eerst bereken je hoe groot de bodem is (dat is een cirkel). Daarna vermenigvuldig je dat met hoe hoog het blikje is. Zo weet je hoeveel erin past! 🥫' }
+                    ],
+                    svg: `<ellipse cx="50" cy="20" rx="35" ry="12" fill="#E17055"/><rect x="15" y="20" width="70" height="55" fill="#E17055"/><ellipse cx="50" cy="75" rx="35" ry="12" fill="#C15F45"/><line x1="50" y1="20" x2="50" y2="75" stroke="#C15F45" stroke-width="2"/><text x="30" y="52" fill="white" font-size="8" font-weight="bold">r</text><text x="65" y="52" fill="white" font-size="8" font-weight="bold">h</text>`
+                },
+                {
+                    id: 'piramide',
+                    name: 'Piramide',
+                    color: '#9B59B6',
+                    description: 'Met een puntje bovenin!',
+                    inputs: [
+                        { id: 'lengte', label: 'Lengte (cm)', hint: 'Lengte van het grondvlak', placeholder: 'Bijv. 6' },
+                        { id: 'breedte', label: 'Breedte (cm)', hint: 'Breedte van het grondvlak', placeholder: 'Bijv. 4' },
+                        { id: 'hoogte', label: 'Hoogte (cm)', hint: 'Afstand van top naar grond', placeholder: 'Bijv. 5' }
+                    ],
+                    formula: '(lengte × breedte × hoogte) ÷ 3',
+                    calculate: (v) => (v.lengte * v.breedte * v.hoogte) / 3,
+                    termDiagram: `
+                        <svg viewBox="0 0 200 200">
+                            <polygon points="20,160 180,160 180,160" fill="#9B59B6" opacity="0.3"/>
+                            <polygon points="100,20 20,160 180,160" fill="#9B59B6" opacity="0.5"/>
+                            <polygon points="100,20 20,160 100,160 180,160" fill="none" stroke="#9B59B6" stroke-width="3"/>
+                            <line x1="100" y1="20" x2="100" y2="160" stroke="#8E44AD" stroke-width="2" stroke-dasharray="4,3"/>
+                            <text x="100" y="15" text-anchor="middle" fill="#9B59B6" font-weight="bold" font-size="11">top</text>
+                            <text x="100" y="180" text-anchor="middle" fill="#9B59B6" font-weight="bold" font-size="10">6 × 4 cm</text>
+                            <text x="125" y="90" text-anchor="middle" fill="#8E44AD" font-weight="bold" font-size="10">5 cm</text>
+                        </svg>
+                    `,
+                    termInfo: {
+                        title: 'Wat zijn lengte, breedte en hoogte?',
+                        terms: [
+                            '<strong>Lengte:</strong> Dit is de lengte van het grondvlak (de bodem).',
+                            '<strong>Breedte:</strong> Dit is de breedte van het grondvlak.',
+                            '<strong>Hoogte:</strong> Dit is de afstand van de top (punt) recht naar beneden naar het grondvlak!',
+                            '<strong>cm³:</strong> De eenheid voor inhoud'
+                        ]
+                    },
+                    steps: [
+                        { title: 'Wat is een piramide?', content: 'Een piramide is een vorm met een puntje bovenop! De bodem is meestal een rechthoek of vierkant. Denk aan de piramides in Egypte! 🏛️' },
+                        { title: 'Het grondvlak', content: 'Het <strong>grondvlak</strong> is de bodem van de piramide. Dit is meestal een rechthoek of vierkant.' },
+                        { title: 'De hoogte', content: 'De <strong>hoogte</strong> is de afstand van de top (punt) recht naar beneden naar het grondvlak. Dit is een denkbeeldige lijn!' },
+                        { title: 'De formule', content: 'Eerst bereken je de inhoud alsof het een blok is (lengte × breedte × hoogte). Daarna deel je door 3.', formula: 'Inhoud = (lengte × breedte × hoogte) ÷ 3' },
+                        { title: 'Voorbeeld', content: 'Lengte 6 cm, breedte 4 cm, hoogte 5 cm: (6 × 4 × 5) ÷ 3 = 40 cm³', formula: '40 cm³' },
+                        { title: 'Waarom delen door 3?', content: 'Een piramide past precies 3 keer in een blok met dezelfde lengte, breedte en hoogte! Daarom nemen we maar 1/3 van de blok inhoud. 🔺' }
+                    ],
+                    svg: `<polygon points="50,15 90,85 10,85" fill="#9B59B6"/><polygon points="50,15 90,85 50,85" fill="#8E44AD"/><polygon points="50,15 10,85 50,85" fill="#7D3C98"/><text x="50" y="60" text-anchor="middle" fill="white" font-size="9" font-weight="bold">1/3</text>`
+                }
+            ]
+        };
+
+        let currentTab = 'oppervlakte';
+        let currentShape = null;
+        let stars = 0;
+        let piValue = 3.14;
+        let questionAnswered = false;
+        let correctInRow = {};
+        let completedShapes = {};
+        let currentQuestion = null;
+        let usedValues = [];
+        let chances = 3;
+        let currentQuestionAttempts = 0;
+        let flappyGameRunning = false;
+        let currentFlappyShape = null;
+
+        function loadFromStorage() {
+            const savedStars = localStorage.getItem('oppervlakteInhoud_stars');
+            const savedCorrectInRow = localStorage.getItem('oppervlakteInhoud_correctInRow');
+            const savedCompletedShapes = localStorage.getItem('oppervlakteInhoud_completedShapes');
+            
+            if (savedStars) {
+                stars = parseInt(savedStars);
+                document.getElementById('starCount').textContent = stars;
+            }
+            
+            if (savedCorrectInRow) {
+                correctInRow = JSON.parse(savedCorrectInRow);
+            }
+            
+            if (savedCompletedShapes) {
+                completedShapes = JSON.parse(savedCompletedShapes);
+            }
+            
+            shapes.oppervlakte.forEach(s => {
+                if (correctInRow[s.id] === undefined) correctInRow[s.id] = 0;
+                if (completedShapes[s.id] === undefined) completedShapes[s.id] = false;
+            });
+            shapes.inhoud.forEach(s => {
+                if (correctInRow[s.id] === undefined) correctInRow[s.id] = 0;
+                if (completedShapes[s.id] === undefined) completedShapes[s.id] = false;
+            });
+        }
+
+        function saveToStorage() {
+            localStorage.setItem('oppervlakteInhoud_stars', stars.toString());
+            localStorage.setItem('oppervlakteInhoud_correctInRow', JSON.stringify(correctInRow));
+            localStorage.setItem('oppervlakteInhoud_completedShapes', JSON.stringify(completedShapes));
+        }
+
+        function resetProgress() {
+            if (confirm('Weet je het zeker? Dit reset al je voortgang!')) {
+                localStorage.removeItem('oppervlakteInhoud_stars');
+                localStorage.removeItem('oppervlakteInhoud_correctInRow');
+                localStorage.removeItem('oppervlakteInhoud_completedShapes');
+                
+                stars = 0;
+                document.getElementById('starCount').textContent = '0';
+                
+                shapes.oppervlakte.forEach(s => { correctInRow[s.id] = 0; completedShapes[s.id] = false; });
+                shapes.inhoud.forEach(s => { correctInRow[s.id] = 0; completedShapes[s.id] = false; });
+                
+                renderShapes();
+                showMascot("Alles is gereset! Begin maar weer opnieuw! 👍", "normal");
+            }
+        }
+
+        function init() {
+            loadFromStorage();
+            renderShapes();
+            setupEventListeners();
+            updateMascot('normal');
+        }
+
+        function getPiValue() {
+            return parseFloat(document.getElementById('piSetting').value);
+        }
+
+        function updateMascot(type = 'normal') {
+            const mascot = document.getElementById('mascot');
+            if (!mascot) return;
+            
+            let svg = '';
+            if (type === 'happy') {
+                svg = `<svg viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="45" fill="#FDCB6E"/>
+                    <circle cx="35" cy="40" r="8" fill="#2D3436"/>
+                    <circle cx="65" cy="40" r="8" fill="#2D3436"/>
+                    <circle cx="37" cy="38" r="3" fill="white"/>
+                    <circle cx="67" cy="38" r="3" fill="white"/>
+                    <ellipse cx="50" cy="60" rx="15" ry="10" fill="#E17055"/>
+                    <path d="M 30 75 Q 50 85 70 75" stroke="#2D3436" stroke-width="3" fill="none"/>
+                </svg>`;
+            } else if (type === 'sad') {
+                svg = `<svg viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="45" fill="#74B9FF"/>
+                    <circle cx="35" cy="45" r="8" fill="#2D3436"/>
+                    <circle cx="65" cy="45" r="8" fill="#2D3436"/>
+                    <circle cx="37" cy="43" r="3" fill="white"/>
+                    <circle cx="67" cy="43" r="3" fill="white"/>
+                    <ellipse cx="50" cy="65" rx="10" ry="5" fill="#2D3436"/>
+                    <path d="M 30 75 Q 50 65 70 75" stroke="#2D3436" stroke-width="3" fill="none"/>
+                </svg>`;
+            } else {
+                svg = `<svg viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="45" fill="#6C5CE7"/>
+                    <circle cx="32" cy="40" r="8" fill="white"/>
+                    <circle cx="68" cy="40" r="8" fill="white"/>
+                    <circle cx="34" cy="40" r="4" fill="#2D3436"/>
+                    <circle cx="70" cy="40" r="4" fill="#2D3436"/>
+                    <path d="M 35 70 Q 50 80 65 70" stroke="#2D3436" stroke-width="4" fill="none" stroke-linecap="round"/>
+                </svg>`;
+            }
+            
+            if (!mascot.querySelector('svg')) {
+                mascot.innerHTML = svg;
+            } else {
+                mascot.querySelector('svg').outerHTML = svg;
+            }
+        }
+
+        function renderShapes() {
+            const grid = document.getElementById('shapesGrid');
+            grid.innerHTML = '';
+
+            shapes[currentTab].forEach((shape, index) => {
+                const card = document.createElement('div');
+                card.className = 'shape-card';
+                card.style.setProperty('--card-color', shape.color);
+                card.dataset.shapeId = shape.id;
+                card.style.animationDelay = `${index * 0.1}s`;
+
+                let statusHtml = '';
+                if (completedShapes[shape.id]) {
+                    statusHtml = `<div style="position:absolute; top:10px; right:10px; font-size:1.5rem;">✅</div>`;
+                    card.style.boxShadow = '0 0 20px rgba(0, 184, 148, 0.5)';
+                    card.style.background = 'linear-gradient(135deg, rgba(0, 184, 148, 0.15), rgba(0, 206, 201, 0.1))';
+                    card.style.border = '3px solid #00B894';
+                } else if (correctInRow[shape.id] > 0) {
+                    statusHtml = `<div style="position:absolute; top:10px; right:10px; font-size:0.9rem; background:linear-gradient(135deg, var(--accent1), var(--accent2)); color:white; padding:4px 10px; border-radius:20px;">${correctInRow[shape.id]}/5</div>`;
+                }
+
+                card.innerHTML = `
+                    ${statusHtml}
+                    <div class="shape-icon">
+                        <svg class="shape-svg" viewBox="0 0 100 100">
+                            ${shape.svg}
+                        </svg>
+                    </div>
+                    <h3>${shape.name}</h3>
+                    <p>${shape.description}</p>
+                `;
+
+                card.addEventListener('click', () => selectShape(shape));
+                grid.appendChild(card);
+            });
+        }
+
+        function selectShape(shape) {
+            currentShape = shape;
+            window.scrollTo(0, 0);
+            document.getElementById('welcomeBanner').style.display = 'none';
+            document.getElementById('shapesGrid').style.display = 'none';
+            document.getElementById('lessonView').classList.add('active');
+
+            document.getElementById('lessonTitle').innerHTML = `
+                <svg width="40" height="40" viewBox="0 0 100 100" style="vertical-align: middle;">
+                    ${shape.svg}
+                </svg>
+                ${currentTab === 'oppervlakte' ? 'Oppervlakte van ' : 'Inhoud van een '}${shape.name}
+            `;
+
+            document.getElementById('lessonSubtitle').textContent = shape.description;
+
+            renderTermExplanation(shape);
+            renderSteps(shape);
+            renderCalculator();
+            
+            usedValues = [];
+        }
+
+        function renderTermExplanation(shape) {
+            const container = document.getElementById('termExplanation');
+            container.innerHTML = `
+                <div class="term-diagram">
+                    ${shape.termDiagram}
+                </div>
+                <div class="term-text">
+                    <h3>${shape.termInfo.title}</h3>
+                    <ul>
+                        ${shape.termInfo.terms.map(t => `<li>${t}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+
+        function renderSteps(shape) {
+            const container = document.getElementById('stepsContainer');
+            container.innerHTML = shape.steps.map((step, i) => `
+                <div class="step" style="animation-delay: ${i * 0.2}s">
+                    <div class="step-number">${i + 1}</div>
+                    <div class="step-content">
+                        <h3>${step.title}</h3>
+                        <p>${step.content}</p>
+                        ${step.formula ? `<div class="formula-box">${step.formula}</div>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderCalculator() {
+            currentQuestion = generateQuestion();
+            usedValues.push([...Object.values(currentQuestion.values)]);
+            renderCurrentQuestion();
+        }
+
+        function generateRandomValue(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function generateQuestion() {
+            const shape = currentShape;
+            const pi = getPiValue();
+            const values = {};
+            let questionText = '';
+            let correctAnswer = 0;
+            
+            if (shape.id === 'vierkant') {
+                const zijde = generateRandomValue(2, 10);
+                values.zijde = zijde;
+                questionText = `Bereken de oppervlakte van een vierkant met zijde ${zijde} cm.`;
+                correctAnswer = zijde * zijde;
+            } else if (shape.id === 'rechthoek') {
+                const lengte = generateRandomValue(3, 12);
+                const breedte = generateRandomValue(2, 8);
+                values.lengte = lengte;
+                values.breedte = breedte;
+                questionText = `Bereken de oppervlakte van een rechthoek met lengte ${lengte} cm en breedte ${breedte} cm.`;
+                correctAnswer = lengte * breedte;
+            } else if (shape.id === 'driehoek') {
+                const basis = generateRandomValue(4, 12);
+                const hoogte = generateRandomValue(3, 8);
+                values.basis = basis;
+                values.hoogte = hoogte;
+                questionText = `Bereken de oppervlakte van een driehoek met basis ${basis} cm en hoogte ${hoogte} cm.`;
+                correctAnswer = (basis * hoogte) / 2;
+            } else if (shape.id === 'cirkel') {
+                const straal = generateRandomValue(2, 8);
+                values.straal = straal;
+                questionText = `Bereken de oppervlakte van een cirkel met straal ${straal} cm. (Gebruik π = ${pi})`;
+                correctAnswer = pi * straal * straal;
+            } else if (shape.id === 'kubus') {
+                const zijde = generateRandomValue(2, 6);
+                values.zijde = zijde;
+                questionText = `Bereken de inhoud van een kubus met zijde ${zijde} cm.`;
+                correctAnswer = zijde * zijde * zijde;
+            } else if (shape.id === 'blok') {
+                const lengte = generateRandomValue(3, 8);
+                const breedte = generateRandomValue(2, 6);
+                const hoogte = generateRandomValue(2, 5);
+                values.lengte = lengte;
+                values.breedte = breedte;
+                values.hoogte = hoogte;
+                questionText = `Bereken de inhoud van een blok met lengte ${lengte} cm, breedte ${breedte} cm en hoogte ${hoogte} cm.`;
+                correctAnswer = lengte * breedte * hoogte;
+            } else if (shape.id === 'cilinder') {
+                const straal = generateRandomValue(2, 5);
+                const hoogte = generateRandomValue(3, 8);
+                values.straal = straal;
+                values.hoogte = hoogte;
+                questionText = `Bereken de inhoud van een cilinder met straal ${straal} cm en hoogte ${hoogte} cm. (Gebruik π = ${pi})`;
+                correctAnswer = pi * straal * straal * hoogte;
+            } else if (shape.id === 'piramide') {
+                const lengte = generateRandomValue(3, 8);
+                const breedte = generateRandomValue(2, 6);
+                const hoogte = generateRandomValue(3, 8);
+                values.lengte = lengte;
+                values.breedte = breedte;
+                values.hoogte = hoogte;
+                questionText = `Bereken de inhoud van een piramide met lengte ${lengte} cm, breedte ${breedte} cm en hoogte ${hoogte} cm.`;
+                correctAnswer = (lengte * breedte * hoogte) / 3;
+            }
+            
+            return {
+                values: values,
+                questionText: questionText,
+                correctAnswer: correctAnswer,
+                piUsed: pi
+            };
+        }
+
+        function generateQuestionDiagram(shape, values) {
+            const color = shape.color;
+            if (shape.id === 'vierkant') {
+                const s = values.zijde * 6;
+                return `<svg viewBox="0 0 ${s+40} ${s+40}">
+                    <rect x="20" y="20" width="${s}" height="${s}" fill="${color}" opacity="0.3"/>
+                    <rect x="20" y="20" width="${s}" height="${s}" fill="none" stroke="${color}" stroke-width="3"/>
+                    <line x1="20" y1="10" x2="${20+s}" y2="10" stroke="${color}" stroke-width="2"/>
+                    <line x1="20" y1="10" x2="30" y2="20" stroke="${color}" stroke-width="2"/>
+                    <line x1="${20+s}" y1="10" x2="${10+s}" y2="20" stroke="${color}" stroke-width="2"/>
+                    <text x="${20+s/2}" y="8" text-anchor="middle" fill="${color}" font-weight="bold" font-size="12">${values.zijde} cm</text>
+                    <line x1="10" y1="20" x2="10" y2="${20+s}" stroke="${color}" stroke-width="2"/>
+                    <line x1="10" y1="20" x2="20" y2="30" stroke="${color}" stroke-width="2"/>
+                    <line x1="10" y1="${20+s}" x2="20" y2="${10+s}" stroke="${color}" stroke-width="2"/>
+                    <text x="5" y="${20+s/2+5}" text-anchor="middle" fill="${color}" font-weight="bold" font-size="12" transform="rotate(-90, 5, ${20+s/2+5})">${values.zijde} cm</text>
+                </svg>`;
+            } else if (shape.id === 'rechthoek') {
+                const l = Math.min(values.lengte * 8, 180);
+                const b = Math.min(values.breedte * 10, 100);
+                return `<svg viewBox="0 0 ${l+50} ${b+50}">
+                    <rect x="25" y="25" width="${l}" height="${b}" fill="${color}" opacity="0.3"/>
+                    <rect x="25" y="25" width="${l}" height="${b}" fill="none" stroke="${color}" stroke-width="3"/>
+                    <line x1="25" y1="10" x2="${25+l}" y2="10" stroke="${color}" stroke-width="2"/>
+                    <line x1="25" y1="10" x2="35" y2="20" stroke="${color}" stroke-width="2"/>
+                    <line x1="${25+l}" y1="10" x2="${15+l}" y2="20" stroke="${color}" stroke-width="2"/>
+                    <text x="${25+l/2}" y="8" text-anchor="middle" fill="${color}" font-weight="bold" font-size="11">${values.lengte} cm</text>
+                    <line x1="10" y1="25" x2="10" y2="${25+b}" stroke="${color}" stroke-width="2"/>
+                    <line x1="10" y1="25" x2="20" y2="35" stroke="${color}" stroke-width="2"/>
+                    <line x1="10" y1="${25+b}" x2="20" y2="${15+b}" stroke="${color}" stroke-width="2"/>
+                    <text x="5" y="${25+b/2+5}" text-anchor="middle" fill="${color}" font-weight="bold" font-size="11" transform="rotate(-90, 5, ${25+b/2+5})">${values.breedte} cm</text>
+                </svg>`;
+            } else if (shape.id === 'driehoek') {
+                const bas = Math.min(values.basis * 12, 180);
+                const h = Math.min(values.hoogte * 12, 120);
+                return `<svg viewBox="0 0 ${bas+40} ${h+40}">
+                    <polygon points="20,${20+h} ${20+bas},${20+h} ${20+bas/2},20" fill="${color}" opacity="0.3"/>
+                    <polygon points="20,${20+h} ${20+bas},${20+h} ${20+bas/2},20" fill="none" stroke="${color}" stroke-width="3"/>
+                    <line x1="${20+bas/2}" y1="20" x2="${20+bas/2}" y2="${20+h}" stroke="${color}" stroke-width="2" stroke-dasharray="4,3"/>
+                    <text x="${20+bas/2}" y="15" text-anchor="middle" fill="${color}" font-weight="bold" font-size="11">${values.hoogte} cm</text>
+                    <line x1="20" y1="${20+h+5}" x2="${20+bas}" y2="${20+h+5}" stroke="${color}" stroke-width="2"/>
+                    <text x="${20+bas/2}" y="${35+h}" text-anchor="middle" fill="${color}" font-weight="bold" font-size="11">${values.basis} cm</text>
+                </svg>`;
+            } else if (shape.id === 'cirkel') {
+                const r = Math.min(values.straal * 8, 70);
+                return `<svg viewBox="0 0 ${r*2+60} ${r*2+60}">
+                    <circle cx="${r+30}" cy="${r+30}" r="${r}" fill="${color}" opacity="0.3"/>
+                    <circle cx="${r+30}" cy="${r+30}" r="${r}" fill="none" stroke="${color}" stroke-width="3"/>
+                    <circle cx="${r+30}" cy="${r+30}" r="4" fill="${color}"/>
+                    <line x1="${r+30}" y1="${r+30}" x2="${r+30+r}" y2="${r+30}" stroke="${color}" stroke-width="2"/>
+                    <text x="${r+30+r/2}" y="${r+25}" text-anchor="middle" fill="${color}" font-weight="bold" font-size="11">${values.straal} cm</text>
+                    <text x="${r+30}" y="${r+30+r+15}" text-anchor="middle" fill="${color}" font-weight="bold" font-size="11">straal = ${values.straal} cm</text>
+                </svg>`;
+            } else if (shape.id === 'kubus') {
+                const s = Math.min(values.zijde * 12, 120);
+                return `<svg viewBox="0 0 ${s+60} ${s+50}">
+                    <rect x="30" y="30" width="${s}" height="${s*0.8}" fill="${color}" opacity="0.3"/>
+                    <polygon points="30,30 ${30+s*0.3},10 ${30+s*0.3+s},10 ${30+s},30" fill="${color}" opacity="0.4"/>
+                    <polygon points="${30+s},30 ${30+s*0.3+s},10 ${30+s*0.3+s},${10+s*0.8} ${30+s},${30+s*0.8}" fill="${color}" opacity="0.2"/>
+                    <rect x="30" y="30" width="${s}" height="${s*0.8}" fill="none" stroke="${color}" stroke-width="2"/>
+                    <polygon points="30,30 ${30+s*0.3},10 ${30+s*0.3+s},10 ${30+s},30" fill="none" stroke="${color}" stroke-width="2"/>
+                    <polygon points="${30+s},30 ${30+s*0.3+s},10 ${30+s*0.3+s},${10+s*0.8} ${30+s},${30+s*0.8}" fill="none" stroke="${color}" stroke-width="2"/>
+                    <text x="${30+s/2}" y="${30+s*0.4+5}" text-anchor="middle" fill="${color}" font-weight="bold" font-size="11">${values.zijde} cm</text>
+                </svg>`;
+            } else if (shape.id === 'blok') {
+                const l = Math.min(values.lengte * 12, 150);
+                const b = Math.min(values.breedte * 12, 80);
+                const h = Math.min(values.hoogte * 12, 60);
+                return `<svg viewBox="0 0 ${l+60} ${b+h+50}">
+                    <rect x="30" y="${30+h}" width="${l}" height="${b}" fill="${color}" opacity="0.3"/>
+                    <polygon points="30,${30+h} ${30+l*0.3},30 ${30+l*0.3+l},30 ${30+l},${30+h}" fill="${color}" opacity="0.4"/>
+                    <polygon points="${30+l},${30+h} ${30+l*0.3+l},30 ${30+l*0.3+l},${30+h+b} ${30+l},${30+h+b}" fill="${color}" opacity="0.2"/>
+                    <rect x="30" y="${30+h}" width="${l}" height="${b}" fill="none" stroke="${color}" stroke-width="2"/>
+                    <polygon points="30,${30+h} ${30+l*0.3},30 ${30+l*0.3+l},30 ${30+l},${30+h}" fill="none" stroke="${color}" stroke-width="2"/>
+                    <polygon points="${30+l},${30+h} ${30+l*0.3+l},30 ${30+l*0.3+l},${30+h+b} ${30+l},${30+h+b}" fill="none" stroke="${color}" stroke-width="2"/>
+                    <text x="${30+l/2}" y="${30+h+b/2+5}" text-anchor="middle" fill="${color}" font-weight="bold" font-size="10">${values.lengte}×${values.breedte}×${values.hoogte} cm</text>
+                </svg>`;
+            } else if (shape.id === 'cilinder') {
+                const r = Math.min(values.straal * 12, 60);
+                const h = Math.min(values.hoogte * 10, 100);
+                return `<svg viewBox="0 0 ${r*2+50} ${r+h+50}">
+                    <ellipse cx="${r+25}" cy="${30+h}" rx="${r}" ry="${r*0.3}" fill="${color}" opacity="0.3"/>
+                    <ellipse cx="${r+25}" cy="${30+h}" rx="${r}" ry="${r*0.3}" fill="none" stroke="${color}" stroke-width="2"/>
+                    <rect x="${25}" y="30" width="${r*2}" height="${h}" fill="${color}" opacity="0.3"/>
+                    <rect x="${25}" y="30" width="${r*2}" height="${h}" fill="none" stroke="${color}" stroke-width="2"/>
+                    <ellipse cx="${r+25}" cy="30" rx="${r}" ry="${r*0.3}" fill="${color}" opacity="0.5"/>
+                    <ellipse cx="${r+25}" cy="30" rx="${r}" ry="${r*0.3}" fill="none" stroke="${color}" stroke-width="2"/>
+                    <line x1="${r+25}" y1="30" x2="${r+25}" y2="${30+h+r*0.3+5}" stroke="${color}" stroke-width="1" stroke-dasharray="3,2"/>
+                    <text x="${r+30}" y="${30+h/2+5}" text-anchor="middle" fill="${color}" font-weight="bold" font-size="11">${values.hoogte} cm</text>
+                    <text x="${r+25}" y="${30+h+r*0.3+15}" text-anchor="middle" fill="${color}" font-weight="bold" font-size="11">r = ${values.straal} cm</text>
+                </svg>`;
+            } else if (shape.id === 'piramide') {
+                const l = Math.min(values.lengte * 10, 120);
+                const b = Math.min(values.breedte * 12, 80);
+                const h = Math.min(values.hoogte * 10, 100);
+                return `<svg viewBox="0 0 ${l+40} ${h+b+40}">
+                    <polygon points="${20+l/2},20 20,${20+h+b} ${20+l},${20+h+b}" fill="${color}" opacity="0.3"/>
+                    <polygon points="${20+l/2},20 20,${20+h+b} ${20+l},${20+h+b}" fill="none" stroke="${color}" stroke-width="3"/>
+                    <line x1="${20+l/2}" y1="20" x2="${20+l/2}" y2="${20+h+b}" stroke="${color}" stroke-width="2" stroke-dasharray="4,3"/>
+                    <text x="${20+l/2}" y="15" text-anchor="middle" fill="${color}" font-weight="bold" font-size="11">top</text>
+                    <text x="${20+l/2}" y="${35+h+b}" text-anchor="middle" fill="${color}" font-weight="bold" font-size="10">${values.lengte} × ${values.breedte} cm</text>
+                    <text x="${20+l/2+15}" y="${20+h/2+b/2}" text-anchor="middle" fill="${color}" font-weight="bold" font-size="10">${values.hoogte} cm</text>
+                </svg>`;
+            }
+            return `<svg viewBox="0 0 100 100">${shape.svg}</svg>`;
+        }
+
+        function renderCurrentQuestion() {
+            const q = currentQuestion;
+            const unit = currentTab === 'oppervlakte' ? 'cm²' : 'cm³';
+            
+            questionAnswered = false;
+            
+            const questionDiagram = generateQuestionDiagram(currentShape, q.values);
+            document.getElementById('questionShapePreview').innerHTML = questionDiagram;
+            
+            let valuesHtml = '';
+            Object.entries(q.values).forEach(([key, value]) => {
+                const label = currentShape.inputs.find(i => i.id === key)?.label || key;
+                valuesHtml += `<span class="question-value">${label}: ${value} cm</span>`;
+            });
+
+            document.getElementById('questionTitle').textContent = q.questionText;
+            document.getElementById('questionValues').innerHTML = valuesHtml;
+            document.getElementById('answerInput').value = '';
+            document.getElementById('answerInput').disabled = false;
+            document.getElementById('answerInput').focus();
+            
+            chances = 3;
+            currentQuestionAttempts = 0;
+            updateChancesDisplay();
+            
+            document.getElementById('questionResult').classList.remove('show', 'correct', 'wrong');
+        }
+
+        function updateChancesDisplay() {
+            const display = document.getElementById('chancesDisplay');
+            let hearts = '❤️'.repeat(chances) + '❌'.repeat(3 - chances);
+            display.innerHTML = `<span class="hearts">${hearts}</span> ${chances} ${chances === 1 ? 'poging' : 'pogingen'} over`;
+        }
+
+        function checkAnswer() {
+            if (questionAnswered) {
+                nextQuestion();
+                return;
+            }
+            
+            const userAnswer = parseFloat(document.getElementById('answerInput').value);
+            const q = currentQuestion;
+            const unit = currentTab === 'oppervlakte' ? 'cm²' : 'cm³';
+            const tolerance = 0.1;
+            
+            const resultBox = document.getElementById('questionResult');
+            
+            if (isNaN(userAnswer)) {
+                showMascot("Vul eerst een antwoord in! 🤔", "normal");
+                return;
+            }
+            
+            const isCorrect = Math.abs(userAnswer - q.correctAnswer) <= tolerance;
+            
+            if (isCorrect) {
+                questionAnswered = true;
+                document.getElementById('answerInput').disabled = true;
+                
+                resultBox.classList.remove('wrong');
+                resultBox.classList.add('correct', 'show');
+                resultBox.innerHTML = `
+                    <h4>✅ Correct! Goed gedaan!</h4>
+                    <p>Het juiste antwoord is: <strong>${q.correctAnswer.toFixed(2)} ${unit}</strong></p>
+                    <button class="new-question-btn" id="nextQBtn" onclick="nextQuestion()">Volgende vraag ➡️</button>
+                `;
+                setTimeout(() => document.getElementById('nextQBtn')?.focus(), 100);
+                
+                addSolvedQuestion(q, q.correctAnswer, true);
+                correctInRow[currentShape.id]++;
+                if (correctInRow[currentShape.id] >= 5) {
+                    completedShapes[currentShape.id] = true;
+                    saveToStorage();
+                    addStars(1);
+                    celebrate();
+                    
+                    document.getElementById('flappyInpage').classList.add('active');
+                    setTimeout(() => {
+                        startFlappyBird(currentShape);
+                    }, 100);
+                } else {
+                    addStars(1);
+                    celebrate();
+                    const remaining = 5 - correctInRow[currentShape.id];
+                    if (remaining > 0) {
+                        showMascot(getRandomMessage('happy') + ` (nog ${remaining} te gaan!)`, "happy");
+                    } else {
+                        showMascot(getRandomMessage('happy'), "happy");
+                    }
+                }
+            } else {
+                chances--;
+                currentQuestionAttempts++;
+                correctInRow[currentShape.id] = 0;
+                saveToStorage();
+                updateChancesDisplay();
+                
+                if (chances > 0) {
+                    resultBox.classList.remove('correct');
+                    resultBox.classList.add('wrong', 'show');
+                    resultBox.innerHTML = `
+                        <h4>❌ Niet helemaal goed</h4>
+                        <p>Probeer het nog eens! Je hebt nog ${chances} ${chances === 1 ? 'poging' : 'pogingen'}.</p>
+                    `;
+                    showMascot(getRandomMessage('sad'), "sad");
+                } else {
+                    questionAnswered = true;
+                    document.getElementById('answerInput').disabled = true;
+                    
+                    resultBox.classList.remove('correct');
+                    resultBox.classList.add('wrong', 'show');
+                    resultBox.innerHTML = `
+                        <h4>😔 Helaas, opnieuw proberen?</h4>
+                        <p>Het juiste antwoord is: <strong>${q.correctAnswer.toFixed(2)} ${unit}</strong></p>
+                        <button class="new-question-btn" id="nextQBtn" onclick="nextQuestion()">Volgende vraag ➡️</button>
+                    `;
+                    setTimeout(() => document.getElementById('nextQBtn')?.focus(), 100);
+                    
+                    addSolvedQuestion(q, q.correctAnswer, false);
+                    showMascot("Niet getrouwd blijven! Oefenen maakt perfect! 💪", "sad");
+                }
+            }
+        }
+
+        function addSolvedQuestion(question, answer, wasCorrect) {
+            const list = document.getElementById('solvedList');
+            const calcText = getCalculationText(question);
+            const stepsText = getDetailedSteps(question);
+            
+            const div = document.createElement('div');
+            div.className = 'solved-question' + (wasCorrect ? '' : ' wrong');
+            div.innerHTML = `
+                <h5>${wasCorrect ? '✅' : '❌'} ${question.questionText} <span style="float:right; font-size:0.85rem; color: ${currentQuestionAttempts > 1 ? '#D68910' : '#00B894'}">(${currentQuestionAttempts} ${currentQuestionAttempts === 1 ? 'poging' : 'pogingen'})</span></h5>
+                <div class="answer">${answer.toFixed(2)} ${currentTab === 'oppervlakte' ? 'cm²' : 'cm³'}</div>
+                <div class="calculation">${calcText}</div>
+                ${!wasCorrect ? `<div class="steps-explanation">${stepsText}</div>` : ''}
+            `;
+            
+            list.insertBefore(div, list.firstChild);
+        }
+
+        function getCalculationText(question) {
+            const v = question.values;
+            if (currentShape.id === 'vierkant') {
+                return `${v.zijde} × ${v.zijde} = ${question.correctAnswer.toFixed(2)}`;
+            } else if (currentShape.id === 'rechthoek') {
+                return `${v.lengte} × ${v.breedte} = ${question.correctAnswer.toFixed(2)}`;
+            } else if (currentShape.id === 'driehoek') {
+                return `(${v.basis} × ${v.hoogte}) ÷ 2 = ${question.correctAnswer.toFixed(2)}`;
+            } else if (currentShape.id === 'cirkel') {
+                return `π × ${v.straal} × ${v.straal} = ${question.correctAnswer.toFixed(2)}`;
+            } else if (currentShape.id === 'kubus') {
+                return `${v.zijde} × ${v.zijde} × ${v.zijde} = ${question.correctAnswer.toFixed(2)}`;
+            } else if (currentShape.id === 'blok') {
+                return `${v.lengte} × ${v.breedte} × ${v.hoogte} = ${question.correctAnswer.toFixed(2)}`;
+            } else if (currentShape.id === 'cilinder') {
+                return `π × ${v.straal} × ${v.straal} × ${v.hoogte} = ${question.correctAnswer.toFixed(2)}`;
+            } else if (currentShape.id === 'piramide') {
+                return `(${v.lengte} × ${v.breedte} × ${v.hoogte}) ÷ 3 = ${question.correctAnswer.toFixed(2)}`;
+            }
+            return '';
+        }
+
+        function getDetailedCalculation(q) {
+            return getCalculationText(q);
+        }
+
+        function getDetailedSteps(question) {
+            const v = question.values;
+            const pi = question.piUsed || 3.14;
+            
+            if (currentShape.id === 'vierkant') {
+                return `Stap 1: De zijde is ${v.zijde} cm.<br>Stap 2: Vermenigvuldig de zijde met zichzelf: ${v.zijde} × ${v.zijde} = ${(v.zijde * v.zijde).toFixed(2)}`;
+            } else if (currentShape.id === 'rechthoek') {
+                return `Stap 1: De lengte is ${v.lengte} cm en de breedte is ${v.breedte} cm.<br>Stap 2: Vermenigvuldig lengte × breedte: ${v.lengte} × ${v.breedte} = ${(v.lengte * v.breedte).toFixed(2)}`;
+            } else if (currentShape.id === 'driehoek') {
+                return `Stap 1: De basis is ${v.basis} cm en de hoogte is ${v.hoogte} cm.<br>Stap 2: Vermenigvuldig basis × hoogte: ${v.basis} × ${v.hoogte} = ${(v.basis * v.hoogte).toFixed(2)}<br>Stap 3: Deel door 2: ${(v.basis * v.hoogte)} ÷ 2 = ${((v.basis * v.hoogte) / 2).toFixed(2)}`;
+            } else if (currentShape.id === 'cirkel') {
+                return `Stap 1: De straal is ${v.straal} cm.<br>Stap 2: Bereken r × r: ${v.straal} × ${v.straal} = ${(v.straal * v.straal).toFixed(2)}<br>Stap 3: Vermenigvuldig met π (${pi}): ${pi} × ${(v.straal * v.straal).toFixed(2)} = ${(pi * v.straal * v.straal).toFixed(2)}`;
+            } else if (currentShape.id === 'kubus') {
+                return `Stap 1: De zijde is ${v.zijde} cm.<br>Stap 2: Vermenigvuldig zijde × zijde × zijde: ${v.zijde} × ${v.zijde} × ${v.zijde} = ${(v.zijde * v.zijde * v.zijde).toFixed(2)}`;
+            } else if (currentShape.id === 'blok') {
+                return `Stap 1: De lengte is ${v.lengte} cm, breedte is ${v.breedte} cm en hoogte is ${v.hoogte} cm.<br>Stap 2: Vermenigvuldig alle drie: ${v.lengte} × ${v.breedte} × ${v.hoogte} = ${(v.lengte * v.breedte * v.hoogte).toFixed(2)}`;
+            } else if (currentShape.id === 'cilinder') {
+                return `Stap 1: De straal is ${v.straal} cm en hoogte is ${v.hoogte} cm.<br>Stap 2: Bereken r × r: ${v.straal} × ${v.straal} = ${(v.straal * v.straal).toFixed(2)}<br>Stap 3: Vermenigvuldig met π en hoogte: ${pi} × ${(v.straal * v.straal).toFixed(2)} × ${v.hoogte} = ${(pi * v.straal * v.straal * v.hoogte).toFixed(2)}`;
+            } else if (currentShape.id === 'piramide') {
+                return `Stap 1: De lengte is ${v.lengte} cm, breedte is ${v.breedte} cm en hoogte is ${v.hoogte} cm.<br>Stap 2: Bereken blok inhoud: ${v.lengte} × ${v.breedte} × ${v.hoogte} = ${(v.lengte * v.breedte * v.hoogte).toFixed(2)}<br>Stap 3: Deel door 3: ${(v.lengte * v.breedte * v.hoogte)} ÷ 3 = ${((v.lengte * v.breedte * v.hoogte) / 3).toFixed(2)}`;
+            }
+            return '';
+        }
+
+        function nextQuestion() {
+            let attempts = 0;
+            do {
+                currentQuestion = generateQuestion();
+                attempts++;
+            } while (hasUsedValues() && attempts < 50);
+            
+            renderCurrentQuestion();
+        }
+
+        function hasUsedValues() {
+            const currentValues = Object.values(currentQuestion.values);
+            return usedValues.some(used => 
+                used.length === currentValues.length && 
+                used.every((v, i) => v === currentValues[i])
+            );
+        }
+
+        function addStars(amount) {
+            stars += amount;
+            document.getElementById('starCount').textContent = stars;
+            saveToStorage();
+        }
+
+        function celebrate() {
+            const colors = ['#6C5CE7', '#00CEC9', '#FDCB6E', '#E17055', '#00B894'];
+            
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.top = '-10px';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 50);
+            }
+        }
+
+        const happyMessages = [
+            "Jij bent een rekenwonder! 🌟",
+            "Zo slim! Ga zo door! 🎉",
+            "Knappe knuppert! 💫",
+            "Jij kan dit! 🔥",
+            "Fantastisch! ⭐"
+        ];
+
+        const sadMessages = [
+            "Niet erg, oefenen helpt! 💪",
+            "Bijna goed, probeer het opnieuw! 🤔",
+            "Je leert van je fouten! 📚",
+            "Niet opgeven! 🌈",
+            "Elke dag een beetje beter! 🚀"
+        ];
+
+        const completedMessages = [
+            "Wow! Je hebt deze vorm geleerd! 🏆",
+            "Gefeliciteerd! Je bent een ster! ⭐",
+            "Knap gedaan! Door naar de volgende! 🎯"
+        ];
+
+        function getRandomMessage(type) {
+            let messages;
+            if (type === 'happy') messages = happyMessages;
+            else if (type === 'sad') messages = sadMessages;
+            else if (type === 'completed') messages = completedMessages;
+            else return null;
+            return messages[Math.floor(Math.random() * messages.length)];
+        }
+
+        function showMascot(message, type = 'normal', duration = 5000) {
+            const mascot = document.getElementById('mascot');
+            const speech = document.createElement('div');
+            speech.className = 'mascot-speech';
+            speech.textContent = message;
+            
+            const existingSpeech = mascot.querySelector('.mascot-speech');
+            if (existingSpeech) existingSpeech.remove();
+            
+            mascot.appendChild(speech);
+            updateMascot(type);
+            
+            mascot.classList.remove('hidden');
+            
+            setTimeout(() => {
+                speech.remove();
+            }, duration);
+        }
+
+        function goBack() {
+            document.getElementById('lessonView').classList.remove('active');
+            document.getElementById('welcomeBanner').style.display = 'block';
+            document.getElementById('shapesGrid').style.display = 'grid';
+            currentShape = null;
+            usedValues = [];
+            document.getElementById('solvedList').innerHTML = '';
+            document.getElementById('mascot').classList.add('hidden');
+            document.getElementById('flappyInpage').classList.remove('active');
+        }
+
+        function startFlappyBird(shape) {
+            currentFlappyShape = shape;
+            
+            document.getElementById('flappyInpage').classList.add('active');
+            document.getElementById('flappyInpage').scrollIntoView({behavior: 'smooth'});
+            document.getElementById('mascot').classList.add('hidden');
+            
+            const canvas = document.getElementById('flappyCanvasInpage');
+            const ctx = canvas.getContext('2d');
+            const scoreEl = document.getElementById('flappyScoreInpage');
+            const livesEl = document.getElementById('flappyLivesInpage');
+            const startMsg = document.getElementById('flappyStartMsgInpage');
+            
+            flappyGameRunning = false;
+            let score = 0;
+            let lives = 5;
+            
+            livesEl.textContent = '❤️'.repeat(5);
+            
+            const bird = {
+                x: 50,
+                y: 250,
+                width: 40,
+                height: 40,
+                velocity: 0,
+                gravity: 0.25,
+                jump: -5.5
+            };
+            
+            const pipes = [];
+            const pipeWidth = 60;
+            const pipeGap = 150;
+            const pipeSpeed = 2;
+            let frameCount = 0;
+            
+            const otherShapes = shapes[currentTab].filter(s => s.id !== shape.id);
+            
+            function drawBird() {
+                ctx.save();
+                ctx.translate(bird.x + bird.width/2, bird.y + bird.height/2);
+                const rotation = Math.min(Math.PI/4, Math.max(-Math.PI/4, (bird.velocity * 0.1)));
+                ctx.rotate(rotation);
+                
+                ctx.fillStyle = shape.color;
+                ctx.beginPath();
+                if (shape.id === 'vierkant') {
+                    ctx.fillRect(-bird.width/2, -bird.height/2, bird.width, bird.height);
+                } else if (shape.id === 'rechthoek') {
+                    ctx.fillRect(-25, -15, 50, 30);
+                } else if (shape.id === 'driehoek') {
+                    ctx.moveTo(0, -20);
+                    ctx.lineTo(20, 20);
+                    ctx.lineTo(-20, 20);
+                    ctx.closePath();
+                    ctx.fill();
+                } else if (shape.id === 'cirkel') {
+                    ctx.arc(0, 0, 20, 0, Math.PI * 2);
+                    ctx.fill();
+                } else if (shape.id === 'kubus') {
+                    ctx.fillRect(-20, -20, 40, 40);
+                    ctx.fillStyle = shadeColor(shape.color, -20);
+                    ctx.fillRect(-20, -20, 40, 10);
+                    ctx.fillRect(10, -20, 10, 40);
+                } else if (shape.id === 'blok') {
+                    ctx.fillRect(-25, -15, 50, 30);
+                } else if (shape.id === 'cilinder') {
+                    ctx.ellipse(0, -10, 15, 8, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillRect(-15, -10, 30, 25);
+                    ctx.ellipse(0, 15, 15, 8, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                } else if (shape.id === 'piramide') {
+                    ctx.moveTo(0, -20);
+                    ctx.lineTo(20, 20);
+                    ctx.lineTo(-20, 20);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.fillStyle = shadeColor(shape.color, -20);
+                    ctx.beginPath();
+                    ctx.moveTo(0, -20);
+                    ctx.lineTo(20, 20);
+                    ctx.lineTo(0, 20);
+                    ctx.closePath();
+                    ctx.fill();
+                }
+                
+                ctx.fillStyle = 'white';
+                ctx.beginPath();
+                ctx.arc(8, -5, 4, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = 'black';
+                ctx.beginPath();
+                ctx.arc(9, -5, 2, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.restore();
+            }
+            
+            function shadeColor(color, percent) {
+                const num = parseInt(color.replace('#', ''), 16);
+                const amt = Math.round(2.55 * percent);
+                const R = (num >> 16) + amt;
+                const G = (num >> 8 & 0x00FF) + amt;
+                const B = (num & 0x0000FF) + amt;
+                return '#' + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 + 
+                    (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 + 
+                    (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1);
+            }
+            
+            function drawPipe(pipe) {
+                const topPipeY = pipe.y;
+                const bottomPipeY = pipe.y + pipeGap;
+                
+                const randomShape = otherShapes[Math.floor(Math.random() * otherShapes.length)];
+                
+                ctx.fillStyle = '#228B22';
+                ctx.fillRect(pipe.x, 0, pipeWidth, topPipeY);
+                ctx.fillStyle = '#1E7B1E';
+                ctx.fillRect(pipe.x + 5, 0, pipeWidth - 10, topPipeY - 10);
+                
+                ctx.fillRect(pipe.x, bottomPipeY, pipeWidth, canvas.height - bottomPipeY);
+                ctx.fillStyle = '#1E7B1E';
+                ctx.fillRect(pipe.x + 5, bottomPipeY + 10, pipeWidth - 10, canvas.height - bottomPipeY - 10);
+                
+                ctx.fillStyle = randomShape.color;
+                const midX = pipe.x + pipeWidth / 2;
+                if (randomShape.id === 'vierkant') {
+                    ctx.fillRect(midX - 15, topPipeY + 20, 30, 30);
+                } else if (randomShape.id === 'cirkel') {
+                    ctx.beginPath();
+                    ctx.arc(midX, topPipeY + 35, 15, 0, Math.PI * 2);
+                    ctx.fill();
+                } else if (randomShape.id === 'driehoek') {
+                    ctx.beginPath();
+                    ctx.moveTo(midX, topPipeY + 10);
+                    ctx.lineTo(midX + 20, topPipeY + 50);
+                    ctx.lineTo(midX - 20, topPipeY + 50);
+                    ctx.closePath();
+                    ctx.fill();
+                }
+                
+                ctx.fillStyle = randomShape.color;
+                if (randomShape.id === 'kubus' || randomShape.id === 'blok') {
+                    ctx.fillRect(midX - 15, bottomPipeY + 30, 30, 30);
+                } else if (randomShape.id === 'cilinder') {
+                    ctx.beginPath();
+                    ctx.ellipse(midX, bottomPipeY + 20, 12, 6, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillRect(midX - 12, bottomPipeY + 20, 24, 20);
+                    ctx.beginPath();
+                    ctx.ellipse(midX, bottomPipeY + 40, 12, 6, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                } else if (randomShape.id === 'piramide') {
+                    ctx.beginPath();
+                    ctx.moveTo(midX, bottomPipeY + 10);
+                    ctx.lineTo(midX + 20, bottomPipeY + 50);
+                    ctx.lineTo(midX - 20, bottomPipeY + 50);
+                    ctx.closePath();
+                    ctx.fill();
+                }
+            }
+            
+            function update() {
+                if (!flappyGameRunning) return;
+                
+                bird.velocity += bird.gravity;
+                bird.y += bird.velocity;
+                
+                if (bird.y + bird.height > canvas.height || bird.y < 0) {
+                    lives--;
+                    livesEl.textContent = '❤️'.repeat(lives) + '❌'.repeat(5 - lives);
+                    if (lives <= 0) {
+                        endFlappyGame();
+                        return;
+                    }
+                    bird.y = 250;
+                    bird.velocity = 0;
+                }
+                
+                if (frameCount % 100 === 0) {
+                    const minHeight = 50;
+                    const maxHeight = canvas.height - pipeGap - 50;
+                    const pipeY = Math.random() * (maxHeight - minHeight) + minHeight;
+                    pipes.push({ x: canvas.width, y: pipeY });
+                }
+                
+                for (let i = pipes.length - 1; i >= 0; i--) {
+                    pipes[i].x -= pipeSpeed;
+                    
+                    if (pipes[i].x + pipeWidth < 0) {
+                        pipes.splice(i, 1);
+                        score++;
+                        scoreEl.textContent = 'Score: ' + score;
+                        continue;
+                    }
+                    
+                    const birdLeft = bird.x;
+                    const birdRight = bird.x + bird.width;
+                    const birdTop = bird.y;
+                    const birdBottom = bird.y + bird.height;
+                    
+                    const pipeLeft = pipes[i].x;
+                    const pipeRight = pipes[i].x + pipeWidth;
+                    const topPipeBottom = pipes[i].y;
+                    const bottomPipeTop = pipes[i].y + pipeGap;
+                    
+                    if (birdRight > pipeLeft && birdLeft < pipeRight) {
+                        if (birdTop < topPipeBottom || birdBottom > bottomPipeTop) {
+                            lives--;
+                            livesEl.textContent = '❤️'.repeat(lives) + '❌'.repeat(5 - lives);
+                            if (lives <= 0) {
+                                endFlappyGame();
+                                return;
+                            }
+                            pipes.splice(i, 1);
+                            bird.y = 250;
+                            bird.velocity = 0;
+                            break;
+                        }
+                    }
+                }
+                
+                frameCount++;
+            }
+            
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+                gradient.addColorStop(0, '#87CEEB');
+                gradient.addColorStop(1, '#E0F6FF');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                pipes.forEach(drawPipe);
+                drawBird();
+            }
+            
+            function gameLoop() {
+                if (flappyGameRunning) {
+                    update();
+                    draw();
+                    requestAnimationFrame(gameLoop);
+                }
+            }
+            
+            function endFlappyGame() {
+                flappyGameRunning = false;
+                
+                let gameMessage;
+                if (score >= 10) {
+                    gameMessage = "Wat ben je goed! Score: " + score + "! 👏";
+                } else if (score >= 5) {
+                    gameMessage = "Goed gedaan! Score: " + score + "! 👍";
+                } else {
+                    gameMessage = "Score: " + score + "! Volgende keer beter! 💪";
+                }
+                
+                document.getElementById('flappyStartMsgInpage').textContent = gameMessage;
+                document.getElementById('flappyStartMsgInpage').style.display = 'block';
+                
+                if (lives <= 0) {
+                    correctInRow[shape.id] = 0;
+                    saveToStorage();
+                }
+                
+                setTimeout(() => {
+                    document.getElementById('flappyInpage').classList.remove('active');
+                    livesEl.textContent = '❤️❤️❤️❤️❤️';
+                    renderShapes();
+                }, 2500);
+            }
+            
+            document.getElementById('flappyCanvasInpage').addEventListener('click', function() {
+                if (!flappyGameRunning && lives > 0) {
+                    flappyGameRunning = true;
+                    document.getElementById('flappyStartMsgInpage').style.display = 'none';
+                    gameLoop();
+                }
+            });
+            
+            document.addEventListener('keydown', function(e) {
+                if (e.code === 'Space') {
+                    e.preventDefault();
+                    if (!flappyGameRunning && lives > 0) {
+                        flappyGameRunning = true;
+                        document.getElementById('flappyStartMsgInpage').style.display = 'none';
+                        gameLoop();
+                    } else if (flappyGameRunning) {
+                        bird.velocity = bird.jump;
+                    }
+                }
+            });
+            
+            draw();
+            
+            setTimeout(() => {
+                if (!flappyGameRunning && lives > 0) {
+                    flappyGameRunning = true;
+                    document.getElementById('flappyStartMsgInpage').style.display = 'none';
+                    gameLoop();
+                }
+            }, 500);
+        }
+
+        function closeFlappyGame() {
+            flappyGameRunning = false;
+            document.getElementById('flappyInpage').classList.remove('active');
+            document.getElementById('flappyStartMsgInpage').style.display = 'block';
+            if (currentFlappyShape) {
+                correctInRow[currentFlappyShape.id] = 0;
+            }
+            saveToStorage();
+            renderShapes();
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+            renderShapes();
+            goBack();
+        }
+
+        function setupEventListeners() {
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    const nextBtn = document.getElementById('nextQBtn');
+                    if (nextBtn && document.activeElement === nextBtn) {
+                        nextQuestion();
+                    }
+                }
+            });
+            
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+            });
+            
+            document.getElementById('backBtn').addEventListener('click', goBack);
+            
+            document.getElementById('checkAnswerBtn').addEventListener('click', checkAnswer);
+            
+            document.getElementById('answerInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    checkAnswer();
+                }
+            });
+
+            document.querySelector('.stars').addEventListener('click', function() {
+                if (!this.flappyTestCount) this.flappyTestCount = 0;
+                this.flappyTestCount++;
+                if (this.flappyTestCount >= 5 && currentShape) {
+                    this.flappyTestCount = 0;
+                    correctInRow[currentShape.id] = 4;
+                    document.getElementById('answerInput').value = '';
+                    document.getElementById('answerInput').disabled = false;
+                    document.getElementById('questionResult').classList.remove('show');
+                    renderCurrentQuestion();
+                    showMascot("Test mode! Beantwoord nu 1 vraag goed voor flappyvorm! 🎮", "happy");
+                }
+            });
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    </script>
+</body>
+</html>

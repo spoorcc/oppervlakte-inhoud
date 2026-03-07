@@ -60,7 +60,7 @@
 - Hover: lichte achtergrond kleur
 
 #### 2. Vorm Selectie Kaarten (Shapes Grid)
-- 4 kaarten voor Oppervlakte, 4 voor Inhoud
+- 4 kaarten voor Oppervlakte, 5 voor Inhoud
 - Icoon (SVG) + naam + korte beschrijving
 - Status indicator: checkmark ✅ voor voltooid, "X/5" voor voortgang
 - Hover: schaalvergroting + verhoogde schaduw
@@ -112,11 +112,12 @@
 3. **Driehoek**: (basis × hoogte) ÷ 2
 4. **Cirkel**: π × straal²
 
-### Inhoud (4 vormen)
+### Inhoud (5 vormen)
 1. **Kubus**: zijde³ (alle ribben gelijk)
 2. **Blok**: lengte × breedte × hoogte (3D rechthoek)
 3. **Cilinder**: π × straal² × hoogte (ronde vorm)
 4. **Piramide**: (lengte × breedte × hoogte) ÷ 3 (met punt)
+5. **Bol**: (4 × π × r³) ÷ 3 (driedimensionale cirkel)
 
 ## Functionality Specification
 
@@ -212,7 +213,7 @@
 ### Voltooid ✅
 - [x] Website laadt zonder fouten
 - [x] Alle 4 oppervlakte-vormen werken
-- [x] Alle 4 inhoud-vormen werken (inclusief piramide)
+- [x] Alle 5 inhoud-vormen werken (inclusief piramide en bol)
 - [x] Stap-voor-stap uitleg is duidelijk
 - [x] Interactieve berekeningen werken correct
 - [x] Responsive op mobile/tablet/desktop

@@ -2267,22 +2267,22 @@
                 ctx.fillStyle = '#1B5E20';
                 ctx.fillRect(pipe.x + 4, bottomY + 8, pipeWidth - 8, canvas.height - bottomY - 8);
                 
-                const randomShape = allShapes[Math.floor(Math.random() * allShapes.length)];
+                const pipeShape = pipe.shape;
                 const midX = pipe.x + pipeWidth / 2;
                 
-                ctx.fillStyle = randomShape.color;
+                ctx.fillStyle = pipeShape.color;
                 ctx.strokeStyle = 'white';
                 ctx.lineWidth = 2;
                 
-                if (randomShape.id === 'vierkant') {
+                if (pipeShape.id === 'vierkant') {
                     ctx.fillRect(midX - 12, topY + 15, 24, 24);
                     ctx.strokeRect(midX - 12, topY + 15, 24, 24);
-                } else if (randomShape.id === 'cirkel') {
+                } else if (pipeShape.id === 'cirkel') {
                     ctx.beginPath();
                     ctx.arc(midX, topY + 27, 12, 0, Math.PI * 2);
                     ctx.fill();
                     ctx.stroke();
-                } else if (randomShape.id === 'driehoek') {
+                } else if (pipeShape.id === 'driehoek') {
                     ctx.beginPath();
                     ctx.moveTo(midX, topY + 10);
                     ctx.lineTo(midX + 15, topY + 35);
@@ -2290,10 +2290,10 @@
                     ctx.closePath();
                     ctx.fill();
                     ctx.stroke();
-                } else if (randomShape.id === 'kubus' || randomShape.id === 'blok') {
+                } else if (pipeShape.id === 'kubus' || pipeShape.id === 'blok') {
                     ctx.fillRect(midX - 12, bottomY + 25, 24, 24);
                     ctx.strokeRect(midX - 12, bottomY + 25, 24, 24);
-                } else if (randomShape.id === 'cilinder') {
+                } else if (pipeShape.id === 'cilinder') {
                     ctx.beginPath();
                     ctx.ellipse(midX, bottomY + 18, 10, 5, 0, 0, Math.PI * 2);
                     ctx.fill();
@@ -2304,7 +2304,7 @@
                     ctx.ellipse(midX, bottomY + 36, 10, 5, 0, 0, Math.PI * 2);
                     ctx.fill();
                     ctx.stroke();
-                } else if (randomShape.id === 'piramide') {
+                } else if (pipeShape.id === 'piramide') {
                     ctx.beginPath();
                     ctx.moveTo(midX, bottomY + 12);
                     ctx.lineTo(midX + 15, bottomY + 36);
@@ -2312,7 +2312,7 @@
                     ctx.closePath();
                     ctx.fill();
                     ctx.stroke();
-                } else if (randomShape.id === 'rechthoek') {
+                } else if (pipeShape.id === 'rechthoek') {
                     ctx.fillRect(midX - 15, topY + 18, 30, 20);
                     ctx.strokeRect(midX - 15, topY + 18, 30, 20);
                 }
@@ -2341,7 +2341,8 @@
                     const minY = 60;
                     const maxY = canvas.height - pipeGap - 60;
                     const pipeY = Math.random() * (maxY - minY) + minY;
-                    pipes.push({ x: canvas.width, y: pipeY });
+                    const pipeShape = allShapes[Math.floor(Math.random() * allShapes.length)];
+                    pipes.push({ x: canvas.width, y: pipeY, shape: pipeShape });
                 }
                 
                 for (let i = pipes.length - 1; i >= 0; i--) {

@@ -1475,32 +1475,44 @@
         let currentQuestionAttempts = 0;
         let flappyGameRunning = false;
         let currentFlappyShape = null;
+        let questionHistory = {};
 
         function loadFromStorage() {
-            const savedStars = localStorage.getItem('oppervlakteInhoud_stars');
-            const savedCorrectInRow = localStorage.getItem('oppervlakteInhoud_correctInRow');
-            const savedCompletedShapes = localStorage.getItem('oppervlakteInhoud_completedShapes');
-            
-            if (savedStars) {
-                stars = parseInt(savedStars);
-                document.getElementById('starCount').textContent = stars;
-            }
-            
-            if (savedCorrectInRow) {
-                correctInRow = JSON.parse(savedCorrectInRow);
-            }
-            
-            if (savedCompletedShapes) {
-                completedShapes = JSON.parse(savedCompletedShapes);
+            try {
+                const savedStars = localStorage.getItem('oppervlakteInhoud_stars');
+                const savedCorrectInRow = localStorage.getItem('oppervlakteInhoud_correctInRow');
+                const savedCompletedShapes = localStorage.getItem('oppervlakteInhoud_completedShapes');
+                const savedQuestionHistory = localStorage.getItem('oppervlakteInhoud_questionHistory');
+                
+                if (savedStars) {
+                    stars = parseInt(savedStars);
+                    document.getElementById('starCount').textContent = stars;
+                }
+                
+                if (savedCorrectInRow) {
+                    correctInRow = JSON.parse(savedCorrectInRow);
+                }
+                
+                if (savedCompletedShapes) {
+                    completedShapes = JSON.parse(savedCompletedShapes);
+                }
+                
+                if (savedQuestionHistory) {
+                    questionHistory = JSON.parse(savedQuestionHistory);
+                }
+            } catch (e) {
+                console.error('Error loading from localStorage:', e);
             }
             
             shapes.oppervlakte.forEach(s => {
                 if (correctInRow[s.id] === undefined) correctInRow[s.id] = 0;
                 if (completedShapes[s.id] === undefined) completedShapes[s.id] = false;
+                if (!questionHistory || !questionHistory[s.id]) questionHistory[s.id] = [];
             });
             shapes.inhoud.forEach(s => {
                 if (correctInRow[s.id] === undefined) correctInRow[s.id] = 0;
                 if (completedShapes[s.id] === undefined) completedShapes[s.id] = false;
+                if (!questionHistory || !questionHistory[s.id]) questionHistory[s.id] = [];
             });
         }
 
@@ -1508,6 +1520,7 @@
             localStorage.setItem('oppervlakteInhoud_stars', stars.toString());
             localStorage.setItem('oppervlakteInhoud_correctInRow', JSON.stringify(correctInRow));
             localStorage.setItem('oppervlakteInhoud_completedShapes', JSON.stringify(completedShapes));
+            localStorage.setItem('oppervlakteInhoud_questionHistory', JSON.stringify(questionHistory));
         }
 
         function resetProgress() {
@@ -1515,12 +1528,13 @@
                 localStorage.removeItem('oppervlakteInhoud_stars');
                 localStorage.removeItem('oppervlakteInhoud_correctInRow');
                 localStorage.removeItem('oppervlakteInhoud_completedShapes');
+                localStorage.removeItem('oppervlakteInhoud_questionHistory');
                 
                 stars = 0;
                 document.getElementById('starCount').textContent = '0';
                 
-                shapes.oppervlakte.forEach(s => { correctInRow[s.id] = 0; completedShapes[s.id] = false; });
-                shapes.inhoud.forEach(s => { correctInRow[s.id] = 0; completedShapes[s.id] = false; });
+                shapes.oppervlakte.forEach(s => { correctInRow[s.id] = 0; completedShapes[s.id] = false; questionHistory[s.id] = []; });
+                shapes.inhoud.forEach(s => { correctInRow[s.id] = 0; completedShapes[s.id] = false; questionHistory[s.id] = []; });
                 
                 renderShapes();
                 showMascot("Alles is gereset! Begin maar weer opnieuw! 👍", "normal");
@@ -1637,6 +1651,7 @@
             renderTermExplanation(shape);
             renderSteps(shape);
             renderCalculator();
+            renderQuestionHistory();
             
             usedValues = [];
         }
@@ -1674,6 +1689,82 @@
             currentQuestion = generateQuestion();
             usedValues.push([...Object.values(currentQuestion.values)]);
             renderCurrentQuestion();
+        }
+
+        function renderQuestionHistory() {
+            const list = document.getElementById('solvedList');
+            list.innerHTML = '';
+            
+            if (!currentShape) return;
+            if (!questionHistory) questionHistory = {};
+            if (!questionHistory[currentShape.id]) questionHistory[currentShape.id] = [];
+            
+            const history = questionHistory[currentShape.id];
+            if (history && history.length > 0) {
+                history.forEach((item, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'solved-question' + (item.wasCorrect ? '' : ' wrong');
+                    div.innerHTML = `
+                        <h5>${item.wasCorrect ? '✅' : '❌'} ${item.questionText} <span style="float:right; font-size:0.85rem; color: ${item.attempts > 1 ? '#D68910' : '#00B894'}">(${item.attempts} ${item.attempts === 1 ? 'poging' : 'pogingen'})</span></h5>
+                        <div class="answer">${item.answer.toFixed(2)} ${currentTab === 'oppervlakte' ? 'cm²' : 'cm³'}</div>
+                        <div class="calculation">${getHistoryCalculationText(item)}</div>
+                        ${!item.wasCorrect ? `<div class="steps-explanation">${getHistoryDetailedSteps(item)}</div>` : ''}
+                    `;
+                    list.appendChild(div);
+                });
+            }
+        }
+
+        function getHistoryCalculationText(item) {
+            const v = item.values;
+            if (currentShape.id === 'vierkant') {
+                return `${v.zijde} × ${v.zijde} = ${item.correctAnswer.toFixed(2)}`;
+            } else if (currentShape.id === 'rechthoek') {
+                return `${v.lengte} × ${v.breedte} = ${item.correctAnswer.toFixed(2)}`;
+            } else if (currentShape.id === 'driehoek') {
+                return `(${v.basis} × ${v.hoogte}) ÷ 2 = ${item.correctAnswer.toFixed(2)}`;
+            } else if (currentShape.id === 'cirkel') {
+                return `π × ${v.straal} × ${v.straal} = ${item.correctAnswer.toFixed(2)}`;
+            } else if (currentShape.id === 'kubus') {
+                return `${v.zijde} × ${v.zijde} × ${v.zijde} = ${item.correctAnswer.toFixed(2)}`;
+            } else if (currentShape.id === 'blok') {
+                return `${v.lengte} × ${v.breedte} × ${v.hoogte} = ${item.correctAnswer.toFixed(2)}`;
+            } else if (currentShape.id === 'cilinder') {
+                return `π × ${v.straal} × ${v.straal} × ${v.hoogte} = ${item.correctAnswer.toFixed(2)}`;
+            } else if (currentShape.id === 'piramide') {
+                return `(${v.lengte} × ${v.breedte} × ${v.hoogte}) ÷ 3 = ${item.correctAnswer.toFixed(2)}`;
+            } else if (currentShape.id === 'bol') {
+                return `(4 × π × ${v.straal}³) ÷ 3 = ${item.correctAnswer.toFixed(2)}`;
+            }
+            return '';
+        }
+
+        function getHistoryDetailedSteps(item) {
+            const v = item.values;
+            const pi = 3.14;
+            
+            if (currentShape.id === 'vierkant') {
+                return `Stap 1: De zijde is ${v.zijde} cm.<br>Stap 2: Vermenigvuldig de zijde met zichzelf: ${v.zijde} × ${v.zijde} = ${(v.zijde * v.zijde).toFixed(2)}`;
+            } else if (currentShape.id === 'rechthoek') {
+                return `Stap 1: De lengte is ${v.lengte} cm en de breedte is ${v.breedte} cm.<br>Stap 2: Vermenigvuldig lengte × breedte: ${v.lengte} × ${v.breedte} = ${(v.lengte * v.breedte).toFixed(2)}`;
+            } else if (currentShape.id === 'driehoek') {
+                return `Stap 1: De basis is ${v.basis} cm en de hoogte is ${v.hoogte} cm.<br>Stap 2: Vermenigvuldig basis × hoogte: ${v.basis} × ${v.hoogte} = ${(v.basis * v.hoogte).toFixed(2)}<br>Stap 3: Deel door 2: ${(v.basis * v.hoogte)} ÷ 2 = ${((v.basis * v.hoogte) / 2).toFixed(2)}`;
+            } else if (currentShape.id === 'cirkel') {
+                return `Stap 1: De straal is ${v.straal} cm.<br>Stap 2: Bereken r × r: ${v.straal} × ${v.straal} = ${(v.straal * v.straal).toFixed(2)}<br>Stap 3: Vermenigvuldig met π (${pi}): ${pi} × ${(v.straal * v.straal).toFixed(2)} = ${(pi * v.straal * v.straal).toFixed(2)}`;
+            } else if (currentShape.id === 'kubus') {
+                return `Stap 1: De zijde is ${v.zijde} cm.<br>Stap 2: Vermenigvuldig zijde × zijde × zijde: ${v.zijde} × ${v.zijde} × ${v.zijde} = ${(v.zijde * v.zijde * v.zijde).toFixed(2)}`;
+            } else if (currentShape.id === 'blok') {
+                return `Stap 1: De lengte is ${v.lengte} cm, breedte is ${v.breedte} cm en hoogte is ${v.hoogte} cm.<br>Stap 2: Vermenigvuldig alle drie: ${v.lengte} × ${v.breedte} × ${v.hoogte} = ${(v.lengte * v.breedte * v.hoogte).toFixed(2)}`;
+            } else if (currentShape.id === 'cilinder') {
+                return `Stap 1: De straal is ${v.straal} cm en hoogte is ${v.hoogte} cm.<br>Stap 2: Bereken r × r: ${v.straal} × ${v.straal} = ${(v.straal * v.straal).toFixed(2)}<br>Stap 3: Vermenigvuldig met π en hoogte: ${pi} × ${(v.straal * v.straal).toFixed(2)} × ${v.hoogte} = ${(pi * v.straal * v.straal * v.hoogte).toFixed(2)}`;
+            } else if (currentShape.id === 'piramide') {
+                return `Stap 1: De lengte is ${v.lengte} cm, breedte is ${v.breedte} cm en hoogte is ${v.hoogte} cm.<br>Stap 2: Bereken blok inhoud: ${v.lengte} × ${v.breedte} × ${v.hoogte} = ${(v.lengte * v.breedte * v.hoogte).toFixed(2)}<br>Stap 3: Deel door 3: ${(v.lengte * v.breedte * v.hoogte)} ÷ 3 = ${((v.lengte * v.breedte * v.hoogte) / 3).toFixed(2)}`;
+            } else if (currentShape.id === 'bol') {
+                const r3 = Math.pow(v.straal, 3);
+                const calc = (4 * pi * r3) / 3;
+                return `Stap 1: De straal is ${v.straal} cm.<br>Stap 2: Bereken r³ (r × r × r): ${v.straal} × ${v.straal} × ${v.straal} = ${r3.toFixed(2)}<br>Stap 3: Vermenigvuldig met 4 en π: (4 × ${pi} × ${r3.toFixed(2)}) ÷ 3 = ${calc.toFixed(2)}`;
+            }
+            return '';
         }
 
         function generateRandomValue(min, max) {
@@ -2005,17 +2096,34 @@
             const list = document.getElementById('solvedList');
             const calcText = getCalculationText(question);
             const stepsText = getDetailedSteps(question);
+            const attempts = currentQuestionAttempts;
             
             const div = document.createElement('div');
             div.className = 'solved-question' + (wasCorrect ? '' : ' wrong');
             div.innerHTML = `
-                <h5>${wasCorrect ? '✅' : '❌'} ${question.questionText} <span style="float:right; font-size:0.85rem; color: ${currentQuestionAttempts > 1 ? '#D68910' : '#00B894'}">(${currentQuestionAttempts} ${currentQuestionAttempts === 1 ? 'poging' : 'pogingen'})</span></h5>
+                <h5>${wasCorrect ? '✅' : '❌'} ${question.questionText} <span style="float:right; font-size:0.85rem; color: ${attempts > 1 ? '#D68910' : '#00B894'}">(${attempts} ${attempts === 1 ? 'poging' : 'pogingen'})</span></h5>
                 <div class="answer">${answer.toFixed(2)} ${currentTab === 'oppervlakte' ? 'cm²' : 'cm³'}</div>
                 <div class="calculation">${calcText}</div>
                 ${!wasCorrect ? `<div class="steps-explanation">${stepsText}</div>` : ''}
             `;
             
             list.insertBefore(div, list.firstChild);
+            
+            if (currentShape) {
+                if (!questionHistory[currentShape.id]) {
+                    questionHistory[currentShape.id] = [];
+                }
+                questionHistory[currentShape.id].push({
+                    questionText: question.questionText,
+                    values: question.values,
+                    correctAnswer: question.correctAnswer,
+                    answer: answer,
+                    wasCorrect: wasCorrect,
+                    attempts: attempts,
+                    timestamp: Date.now()
+                });
+                saveToStorage();
+            }
         }
 
         function getCalculationText(question) {

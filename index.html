@@ -873,6 +873,7 @@
             border: 4px solid var(--primary);
             border-radius: 12px;
             background: linear-gradient(to bottom, #87CEEB, #E0F6FF);
+            cursor: pointer;
         }
 
         .flappy-instructions {
@@ -1893,10 +1894,16 @@
                     addStars(1);
                     celebrate();
                     
-                    document.getElementById('flappyInpage').classList.add('active');
-                    setTimeout(() => {
-                        startFlappyBird(currentShape);
-                    }, 100);
+                    // Show flappy game and start it
+                    const flappyEl = document.getElementById('flappyInpage');
+                    if (flappyEl) {
+                        flappyEl.classList.add('active');
+                        setTimeout(() => {
+                            startFlappyBird(currentShape);
+                        }, 100);
+                    } else {
+                        console.error('flappyInpage not found');
+                    }
                 } else {
                     addStars(1);
                     celebrate();
@@ -2083,6 +2090,8 @@
 
         function showMascot(message, type = 'normal', duration = 5000) {
             const mascot = document.getElementById('mascot');
+            if (!mascot) return; // Mascot might be hidden during flappy game
+            
             const speech = document.createElement('div');
             speech.className = 'mascot-speech';
             speech.textContent = message;
@@ -2106,20 +2115,45 @@
             document.getElementById('shapesGrid').style.display = 'grid';
             currentShape = null;
             usedValues = [];
-            document.getElementById('solvedList').innerHTML = '';
-            document.getElementById('mascot').classList.add('hidden');
-            document.getElementById('flappyInpage').classList.remove('active');
+            
+            const solvedList = document.getElementById('solvedList');
+            if (solvedList) solvedList.innerHTML = '';
+            
+            const mascot = document.getElementById('mascot');
+            if (mascot) mascot.classList.add('hidden');
+            
+            const flappyInpage = document.getElementById('flappyInpage');
+            if (flappyInpage) flappyInpage.classList.remove('active');
         }
 
         function startFlappyBird(shape) {
             currentFlappyShape = shape;
             
-            document.getElementById('flappyInpage').classList.add('active');
-            document.getElementById('flappyInpage').scrollIntoView({behavior: 'smooth'});
-            document.getElementById('mascot').classList.add('hidden');
+            const flappySection = document.getElementById('flappyInpage');
+            if (!flappySection) {
+                console.error('flappyInpage element not found!');
+                return;
+            }
+            
+            flappySection.classList.add('active');
+            setTimeout(() => flappySection.scrollIntoView({behavior: 'smooth'}), 100);
+            
+            const mascotEl = document.getElementById('mascot');
+            if (mascotEl) mascotEl.classList.add('hidden');
             
             const canvas = document.getElementById('flappyCanvasInpage');
+            if (!canvas) {
+                console.error('flappyCanvasInpage not found!');
+                return;
+            }
             const ctx = canvas.getContext('2d');
+            
+            if (!ctx) {
+                console.error('Could not get canvas context');
+                alert('Game error: cannot initialize canvas');
+                return;
+            }
+            
             const scoreEl = document.getElementById('flappyScoreInpage');
             const livesEl = document.getElementById('flappyLivesInpage');
             const startMsg = document.getElementById('flappyStartMsgInpage');
@@ -2129,81 +2163,83 @@
             let lives = 5;
             
             livesEl.textContent = '❤️'.repeat(5);
+            scoreEl.textContent = 'Score: 0';
+            startMsg.textContent = 'Klik op de vorm of druk op spatie om te starten!';
+            startMsg.style.display = 'block';
             
             const bird = {
                 x: 50,
-                y: 250,
-                width: 40,
-                height: 40,
+                y: canvas.height / 2,
+                width: 35,
+                height: 35,
                 velocity: 0,
-                gravity: 0.25,
-                jump: -5.5
+                gravity: 0.4,
+                jump: -7
             };
             
             const pipes = [];
-            const pipeWidth = 60;
-            const pipeGap = 150;
-            const pipeSpeed = 2;
+            const pipeWidth = 55;
+            const pipeGap = 140;
+            const pipeSpeed = 2.5;
             let frameCount = 0;
+            let animationId = null;
             
-            const otherShapes = shapes[currentTab].filter(s => s.id !== shape.id);
+            const allShapes = [...shapes.oppervlakte, ...shapes.inhoud];
             
             function drawBird() {
                 ctx.save();
                 ctx.translate(bird.x + bird.width/2, bird.y + bird.height/2);
-                const rotation = Math.min(Math.PI/4, Math.max(-Math.PI/4, (bird.velocity * 0.1)));
+                const rotation = Math.min(Math.PI/4, Math.max(-Math.PI/4, bird.velocity * 0.1));
                 ctx.rotate(rotation);
                 
                 ctx.fillStyle = shape.color;
-                ctx.beginPath();
+                
                 if (shape.id === 'vierkant') {
                     ctx.fillRect(-bird.width/2, -bird.height/2, bird.width, bird.height);
                 } else if (shape.id === 'rechthoek') {
-                    ctx.fillRect(-25, -15, 50, 30);
+                    ctx.fillRect(-22, -14, 44, 28);
                 } else if (shape.id === 'driehoek') {
-                    ctx.moveTo(0, -20);
-                    ctx.lineTo(20, 20);
-                    ctx.lineTo(-20, 20);
+                    ctx.beginPath();
+                    ctx.moveTo(0, -bird.height/2);
+                    ctx.lineTo(bird.width/2, bird.height/2);
+                    ctx.lineTo(-bird.width/2, bird.height/2);
                     ctx.closePath();
                     ctx.fill();
                 } else if (shape.id === 'cirkel') {
-                    ctx.arc(0, 0, 20, 0, Math.PI * 2);
+                    ctx.beginPath();
+                    ctx.arc(0, 0, bird.width/2, 0, Math.PI * 2);
                     ctx.fill();
                 } else if (shape.id === 'kubus') {
-                    ctx.fillRect(-20, -20, 40, 40);
+                    ctx.fillRect(-bird.width/2, -bird.height/2, bird.width, bird.height);
                     ctx.fillStyle = shadeColor(shape.color, -20);
-                    ctx.fillRect(-20, -20, 40, 10);
-                    ctx.fillRect(10, -20, 10, 40);
+                    ctx.fillRect(-bird.width/2, -bird.height/2, bird.width, 8);
+                    ctx.fillRect(bird.width/2 - 8, -bird.height/2, 8, bird.height);
                 } else if (shape.id === 'blok') {
-                    ctx.fillRect(-25, -15, 50, 30);
+                    ctx.fillRect(-22, -14, 44, 28);
                 } else if (shape.id === 'cilinder') {
-                    ctx.ellipse(0, -10, 15, 8, 0, 0, Math.PI * 2);
+                    ctx.beginPath();
+                    ctx.ellipse(0, -8, 14, 8, 0, 0, Math.PI * 2);
                     ctx.fill();
-                    ctx.fillRect(-15, -10, 30, 25);
-                    ctx.ellipse(0, 15, 15, 8, 0, 0, Math.PI * 2);
+                    ctx.fillRect(-14, -8, 28, 22);
+                    ctx.beginPath();
+                    ctx.ellipse(0, 14, 14, 8, 0, 0, Math.PI * 2);
                     ctx.fill();
                 } else if (shape.id === 'piramide') {
-                    ctx.moveTo(0, -20);
-                    ctx.lineTo(20, 20);
-                    ctx.lineTo(-20, 20);
-                    ctx.closePath();
-                    ctx.fill();
-                    ctx.fillStyle = shadeColor(shape.color, -20);
                     ctx.beginPath();
-                    ctx.moveTo(0, -20);
-                    ctx.lineTo(20, 20);
-                    ctx.lineTo(0, 20);
+                    ctx.moveTo(0, -bird.height/2);
+                    ctx.lineTo(bird.width/2, bird.height/2);
+                    ctx.lineTo(-bird.width/2, bird.height/2);
                     ctx.closePath();
                     ctx.fill();
                 }
                 
                 ctx.fillStyle = 'white';
                 ctx.beginPath();
-                ctx.arc(8, -5, 4, 0, Math.PI * 2);
+                ctx.arc(6, -4, 5, 0, Math.PI * 2);
                 ctx.fill();
-                ctx.fillStyle = 'black';
+                ctx.fillStyle = '#2D3436';
                 ctx.beginPath();
-                ctx.arc(9, -5, 2, 0, Math.PI * 2);
+                ctx.arc(7, -4, 2.5, 0, Math.PI * 2);
                 ctx.fill();
                 
                 ctx.restore();
@@ -2212,64 +2248,73 @@
             function shadeColor(color, percent) {
                 const num = parseInt(color.replace('#', ''), 16);
                 const amt = Math.round(2.55 * percent);
-                const R = (num >> 16) + amt;
-                const G = (num >> 8 & 0x00FF) + amt;
-                const B = (num & 0x0000FF) + amt;
-                return '#' + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 + 
-                    (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 + 
-                    (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1);
+                const R = Math.min(255, Math.max(0, (num >> 16) + amt));
+                const G = Math.min(255, Math.max(0, (num >> 8 & 0x00FF) + amt));
+                const B = Math.min(255, Math.max(0, (num & 0x0000FF) + amt));
+                return '#' + (0x1000000 + (R << 16) + (G << 8) + B).toString(16).slice(1);
             }
             
             function drawPipe(pipe) {
-                const topPipeY = pipe.y;
-                const bottomPipeY = pipe.y + pipeGap;
+                const topY = pipe.y;
+                const bottomY = pipe.y + pipeGap;
                 
-                const randomShape = otherShapes[Math.floor(Math.random() * otherShapes.length)];
+                ctx.fillStyle = '#2E7D32';
+                ctx.fillRect(pipe.x, 0, pipeWidth, topY);
+                ctx.fillStyle = '#1B5E20';
+                ctx.fillRect(pipe.x + 4, 0, pipeWidth - 8, topY - 8);
                 
-                ctx.fillStyle = '#228B22';
-                ctx.fillRect(pipe.x, 0, pipeWidth, topPipeY);
-                ctx.fillStyle = '#1E7B1E';
-                ctx.fillRect(pipe.x + 5, 0, pipeWidth - 10, topPipeY - 10);
+                ctx.fillRect(pipe.x, bottomY, pipeWidth, canvas.height - bottomY);
+                ctx.fillStyle = '#1B5E20';
+                ctx.fillRect(pipe.x + 4, bottomY + 8, pipeWidth - 8, canvas.height - bottomY - 8);
                 
-                ctx.fillRect(pipe.x, bottomPipeY, pipeWidth, canvas.height - bottomPipeY);
-                ctx.fillStyle = '#1E7B1E';
-                ctx.fillRect(pipe.x + 5, bottomPipeY + 10, pipeWidth - 10, canvas.height - bottomPipeY - 10);
+                const randomShape = allShapes[Math.floor(Math.random() * allShapes.length)];
+                const midX = pipe.x + pipeWidth / 2;
                 
                 ctx.fillStyle = randomShape.color;
-                const midX = pipe.x + pipeWidth / 2;
+                ctx.strokeStyle = 'white';
+                ctx.lineWidth = 2;
+                
                 if (randomShape.id === 'vierkant') {
-                    ctx.fillRect(midX - 15, topPipeY + 20, 30, 30);
+                    ctx.fillRect(midX - 12, topY + 15, 24, 24);
+                    ctx.strokeRect(midX - 12, topY + 15, 24, 24);
                 } else if (randomShape.id === 'cirkel') {
                     ctx.beginPath();
-                    ctx.arc(midX, topPipeY + 35, 15, 0, Math.PI * 2);
+                    ctx.arc(midX, topY + 27, 12, 0, Math.PI * 2);
                     ctx.fill();
+                    ctx.stroke();
                 } else if (randomShape.id === 'driehoek') {
                     ctx.beginPath();
-                    ctx.moveTo(midX, topPipeY + 10);
-                    ctx.lineTo(midX + 20, topPipeY + 50);
-                    ctx.lineTo(midX - 20, topPipeY + 50);
+                    ctx.moveTo(midX, topY + 10);
+                    ctx.lineTo(midX + 15, topY + 35);
+                    ctx.lineTo(midX - 15, topY + 35);
                     ctx.closePath();
                     ctx.fill();
-                }
-                
-                ctx.fillStyle = randomShape.color;
-                if (randomShape.id === 'kubus' || randomShape.id === 'blok') {
-                    ctx.fillRect(midX - 15, bottomPipeY + 30, 30, 30);
+                    ctx.stroke();
+                } else if (randomShape.id === 'kubus' || randomShape.id === 'blok') {
+                    ctx.fillRect(midX - 12, bottomY + 25, 24, 24);
+                    ctx.strokeRect(midX - 12, bottomY + 25, 24, 24);
                 } else if (randomShape.id === 'cilinder') {
                     ctx.beginPath();
-                    ctx.ellipse(midX, bottomPipeY + 20, 12, 6, 0, 0, Math.PI * 2);
+                    ctx.ellipse(midX, bottomY + 18, 10, 5, 0, 0, Math.PI * 2);
                     ctx.fill();
-                    ctx.fillRect(midX - 12, bottomPipeY + 20, 24, 20);
+                    ctx.stroke();
+                    ctx.fillRect(midX - 10, bottomY + 18, 20, 18);
+                    ctx.strokeRect(midX - 10, bottomY + 18, 20, 18);
                     ctx.beginPath();
-                    ctx.ellipse(midX, bottomPipeY + 40, 12, 6, 0, 0, Math.PI * 2);
+                    ctx.ellipse(midX, bottomY + 36, 10, 5, 0, 0, Math.PI * 2);
                     ctx.fill();
+                    ctx.stroke();
                 } else if (randomShape.id === 'piramide') {
                     ctx.beginPath();
-                    ctx.moveTo(midX, bottomPipeY + 10);
-                    ctx.lineTo(midX + 20, bottomPipeY + 50);
-                    ctx.lineTo(midX - 20, bottomPipeY + 50);
+                    ctx.moveTo(midX, bottomY + 12);
+                    ctx.lineTo(midX + 15, bottomY + 36);
+                    ctx.lineTo(midX - 15, bottomY + 36);
                     ctx.closePath();
                     ctx.fill();
+                    ctx.stroke();
+                } else if (randomShape.id === 'rechthoek') {
+                    ctx.fillRect(midX - 15, topY + 18, 30, 20);
+                    ctx.strokeRect(midX - 15, topY + 18, 30, 20);
                 }
             }
             
@@ -2279,21 +2324,23 @@
                 bird.velocity += bird.gravity;
                 bird.y += bird.velocity;
                 
-                if (bird.y + bird.height > canvas.height || bird.y < 0) {
+                if (bird.y < 0 || bird.y + bird.height > canvas.height) {
                     lives--;
                     livesEl.textContent = '❤️'.repeat(lives) + '❌'.repeat(5 - lives);
+                    
                     if (lives <= 0) {
-                        endFlappyGame();
+                        endGame();
                         return;
                     }
-                    bird.y = 250;
+                    
+                    bird.y = canvas.height / 2;
                     bird.velocity = 0;
                 }
                 
                 if (frameCount % 100 === 0) {
-                    const minHeight = 50;
-                    const maxHeight = canvas.height - pipeGap - 50;
-                    const pipeY = Math.random() * (maxHeight - minHeight) + minHeight;
+                    const minY = 60;
+                    const maxY = canvas.height - pipeGap - 60;
+                    const pipeY = Math.random() * (maxY - minY) + minY;
                     pipes.push({ x: canvas.width, y: pipeY });
                 }
                 
@@ -2307,10 +2354,10 @@
                         continue;
                     }
                     
-                    const birdLeft = bird.x;
-                    const birdRight = bird.x + bird.width;
-                    const birdTop = bird.y;
-                    const birdBottom = bird.y + bird.height;
+                    const birdLeft = bird.x + 5;
+                    const birdRight = bird.x + bird.width - 5;
+                    const birdTop = bird.y + 5;
+                    const birdBottom = bird.y + bird.height - 5;
                     
                     const pipeLeft = pipes[i].x;
                     const pipeRight = pipes[i].x + pipeWidth;
@@ -2321,12 +2368,14 @@
                         if (birdTop < topPipeBottom || birdBottom > bottomPipeTop) {
                             lives--;
                             livesEl.textContent = '❤️'.repeat(lives) + '❌'.repeat(5 - lives);
+                            
                             if (lives <= 0) {
-                                endFlappyGame();
+                                endGame();
                                 return;
                             }
+                            
                             pipes.splice(i, 1);
-                            bird.y = 250;
+                            bird.y = canvas.height / 2;
                             bird.velocity = 0;
                             break;
                         }
@@ -2337,11 +2386,9 @@
             }
             
             function draw() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                
                 const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-                gradient.addColorStop(0, '#87CEEB');
-                gradient.addColorStop(1, '#E0F6FF');
+                gradient.addColorStop(0, '#81D4FA');
+                gradient.addColorStop(1, '#E1F5FE');
                 ctx.fillStyle = gradient;
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
                 
@@ -2350,76 +2397,82 @@
             }
             
             function gameLoop() {
-                if (flappyGameRunning) {
-                    update();
-                    draw();
-                    requestAnimationFrame(gameLoop);
-                }
+                if (!flappyGameRunning) return;
+                
+                update();
+                draw();
+                animationId = requestAnimationFrame(gameLoop);
             }
             
-            function endFlappyGame() {
+            function endGame() {
                 flappyGameRunning = false;
+                if (animationId) cancelAnimationFrame(animationId);
                 
-                let gameMessage;
-                if (score >= 10) {
-                    gameMessage = "Wat ben je goed! Score: " + score + "! 👏";
+                let message;
+                if (score >= 15) {
+                    message = "🌟 SUPER! Score: " + score + "! Je bent een kampioen!";
+                } else if (score >= 10) {
+                    message = "👏 Geweldig! Score: " + score + "!";
                 } else if (score >= 5) {
-                    gameMessage = "Goed gedaan! Score: " + score + "! 👍";
+                    message = "👍 Goed gedaan! Score: " + score + "!";
                 } else {
-                    gameMessage = "Score: " + score + "! Volgende keer beter! 💪";
+                    message = "💪 Oefening baart kunst! Score: " + score;
                 }
                 
-                document.getElementById('flappyStartMsgInpage').textContent = gameMessage;
-                document.getElementById('flappyStartMsgInpage').style.display = 'block';
+                startMsg.textContent = message;
+                startMsg.style.display = 'block';
                 
-                if (lives <= 0) {
-                    correctInRow[shape.id] = 0;
+                if (lives <= 0 && currentFlappyShape) {
+                    correctInRow[currentFlappyShape.id] = 0;
                     saveToStorage();
                 }
                 
                 setTimeout(() => {
-                    document.getElementById('flappyInpage').classList.remove('active');
-                    livesEl.textContent = '❤️❤️❤️❤️❤️';
-                    renderShapes();
-                }, 2500);
+                    closeFlappyGame();
+                }, 3000);
             }
             
-            document.getElementById('flappyCanvasInpage').addEventListener('click', function() {
-                if (!flappyGameRunning && lives > 0) {
-                    flappyGameRunning = true;
-                    document.getElementById('flappyStartMsgInpage').style.display = 'none';
-                    gameLoop();
-                }
-            });
+            function jump() {
+                bird.velocity = bird.jump;
+            }
             
-            document.addEventListener('keydown', function(e) {
-                if (e.code === 'Space') {
-                    e.preventDefault();
-                    if (!flappyGameRunning && lives > 0) {
-                        flappyGameRunning = true;
-                        document.getElementById('flappyStartMsgInpage').style.display = 'none';
-                        gameLoop();
-                    } else if (flappyGameRunning) {
-                        bird.velocity = bird.jump;
-                    }
+            function startGame() {
+                if (lives <= 0) return;
+                flappyGameRunning = true;
+                startMsg.style.display = 'none';
+                gameLoop();
+            }
+            
+            function handleStartOrJump() {
+                if (!flappyGameRunning) {
+                    startGame();
+                } else {
+                    jump();
                 }
-            });
+            }
             
             draw();
             
-            setTimeout(() => {
-                if (!flappyGameRunning && lives > 0) {
-                    flappyGameRunning = true;
-                    document.getElementById('flappyStartMsgInpage').style.display = 'none';
-                    gameLoop();
+            canvas.onclick = handleStartOrJump;
+            canvas.onFlappyJump = jump;
+            
+            document.onkeydown = function(e) {
+                if (e.code === 'Space') {
+                    e.preventDefault();
+                    handleStartOrJump();
+                } else if (e.code === 'Escape') {
+                    closeFlappyGame();
                 }
-            }, 500);
+            };
         }
 
         function closeFlappyGame() {
             flappyGameRunning = false;
             document.getElementById('flappyInpage').classList.remove('active');
             document.getElementById('flappyStartMsgInpage').style.display = 'block';
+            document.getElementById('flappyStartMsgInpage').textContent = 'Klik of druk op spatie om te vliegen!';
+            document.getElementById('flappyScoreInpage').textContent = 'Score: 0';
+            document.getElementById('flappyLivesInpage').textContent = '❤️❤️❤️❤️❤️';
             if (currentFlappyShape) {
                 correctInRow[currentFlappyShape.id] = 0;
             }

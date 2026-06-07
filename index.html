@@ -1727,7 +1727,7 @@
 
         function getHistoryDetailedSteps(item) {
             const v = item.values;
-            const pi = 3.14;
+            const pi = item.piUsed || 3.14;
             
             if (currentShape.id === 'vierkant') {
                 return `Stap 1: De zijde is ${v.zijde} cm.<br>Stap 2: Vermenigvuldig de zijde met zichzelf: ${v.zijde} × ${v.zijde} = ${(v.zijde * v.zijde).toFixed(2)}`;
@@ -2694,6 +2694,12 @@
             });
             
             document.getElementById('backBtn').addEventListener('click', goBack);
+
+            document.getElementById('piSetting').addEventListener('change', function() {
+                if (currentShape && ['cirkel', 'cilinder', 'bol'].includes(currentShape.id) && !questionAnswered) {
+                    renderCalculator();
+                }
+            });
             
             document.getElementById('checkAnswerBtn').addEventListener('click', checkAnswer);
             

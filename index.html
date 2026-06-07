@@ -1214,6 +1214,49 @@
                     svg: `<polygon points="50,15 90,85 10,85" fill="#FDCB6E"/><text x="50" y="60" text-anchor="middle" fill="#2D3436" font-size="10" font-weight="bold">b×h÷2</text>`
                 },
                 {
+                    id: 'parallelogram',
+                    name: 'Parallellogram',
+                    color: '#A29BFE',
+                    description: 'Schuin als een geschoven rechthoek!',
+                    inputs: [
+                        { id: 'basis', label: 'Basis (cm)', hint: 'De onderste kant', placeholder: 'Bijv. 8' },
+                        { id: 'hoogte', label: 'Hoogte (cm)', hint: 'Loodrecht op de basis', placeholder: 'Bijv. 5' }
+                    ],
+                    formula: 'basis × hoogte',
+                    calculate: (v) => v.basis * v.hoogte,
+                    termDiagram: `
+                        <svg viewBox="0 0 220 185">
+                            <polygon points="30,145 160,145 185,30 55,30" fill="#A29BFE" opacity="0.3"/>
+                            <polygon points="30,145 160,145 185,30 55,30" fill="none" stroke="#A29BFE" stroke-width="4"/>
+                            <line x1="100" y1="30" x2="100" y2="145" stroke="white" stroke-width="2.5" stroke-dasharray="6,4"/>
+                            <polyline points="100,136 109,136 109,145" fill="none" stroke="white" stroke-width="2"/>
+                            <line x1="30" y1="162" x2="160" y2="162" stroke="#A29BFE" stroke-width="2"/>
+                            <line x1="30" y1="157" x2="30" y2="167" stroke="#A29BFE" stroke-width="2"/>
+                            <line x1="160" y1="157" x2="160" y2="167" stroke="#A29BFE" stroke-width="2"/>
+                            <text x="95" y="178" text-anchor="middle" fill="#A29BFE" font-weight="bold" font-size="11">basis = 8 cm</text>
+                            <text x="108" y="92" text-anchor="start" fill="white" font-weight="bold" font-size="11">hoogte = 5 cm</text>
+                        </svg>
+                    `,
+                    termInfo: {
+                        title: 'Wat zijn basis en hoogte?',
+                        terms: [
+                            '<strong>Basis:</strong> Dit is de onderste kant van het parallellogram. Net als bij de driehoek!',
+                            '<strong>Hoogte:</strong> De hoogte is de loodrechte afstand van de bovenkant naar de basis. Dit is NIET de schuine zijkant!',
+                            '<strong>Loodrecht:</strong> Dit betekent "haaks" — een rechte hoek van 90°. De stippellijn in de tekening laat zien waar de hoogte is.',
+                            '<strong>cm²:</strong> De eenheid voor oppervlakte'
+                        ]
+                    },
+                    steps: [
+                        { title: 'Wat is een parallellogram?', content: 'Een parallellogram is als een geschoven rechthoek! Het heeft 4 hoeken, en de overstaande kanten zijn parallel (evenwijdig) en even lang. Denk aan een scheve tegel of een ruit.' },
+                        { title: 'Wat is de basis?', content: 'De <strong>basis</strong> is de onderste (horizontale) kant van het parallellogram. Je meet altijd de basis langs de onderkant!' },
+                        { title: 'Wat is de hoogte?', content: 'De <strong>hoogte</strong> is de loodrechte afstand tussen de boven- en onderkant. Let op: dit is NIET de schuine zijkant, maar een rechte lijn recht naar beneden!' },
+                        { title: 'De formule', content: 'De oppervlakte bereken je precies zoals bij een rechthoek: basis maal hoogte. De schuinheid maakt niet uit!', formula: 'Oppervlakte = basis × hoogte' },
+                        { title: 'Voorbeeld', content: 'Basis 8 cm, hoogte 5 cm: 8 × 5 = 40 cm²', formula: '40 cm²' },
+                        { title: 'Waarom hetzelfde als rechthoek?', content: 'Als je het scheve stukje wegknipt en aan de andere kant vastplakt, krijg je precies een rechthoek! Dus de formule is hetzelfde: basis × hoogte. ✂️' }
+                    ],
+                    svg: `<polygon points="10,80 70,80 90,20 30,20" fill="#A29BFE"/><line x1="30" y1="20" x2="30" y2="80" stroke="white" stroke-width="2" stroke-dasharray="4,3"/><polyline points="30,71 39,71 39,80" fill="none" stroke="white" stroke-width="1.5"/><text x="52" y="58" text-anchor="middle" fill="white" font-size="9" font-weight="bold">b×h</text>`
+                },
+                {
                     id: 'cirkel',
                     name: 'Cirkel',
                     color: '#E17055',
@@ -1726,6 +1769,8 @@
                 return `${v.lengte} × ${v.breedte} = ${item.correctAnswer.toFixed(2)}`;
             } else if (currentShape.id === 'driehoek') {
                 return `(${v.basis} × ${v.hoogte}) ÷ 2 = ${item.correctAnswer.toFixed(2)}`;
+            } else if (currentShape.id === 'parallelogram') {
+                return `${v.basis} × ${v.hoogte} = ${item.correctAnswer.toFixed(2)}`;
             } else if (currentShape.id === 'cirkel') {
                 return `π × ${v.straal} × ${v.straal} = ${item.correctAnswer.toFixed(2)}`;
             } else if (currentShape.id === 'kubus') {
@@ -1752,6 +1797,8 @@
                 return `Stap 1: De lengte is ${v.lengte} cm en de breedte is ${v.breedte} cm.<br>Stap 2: Vermenigvuldig lengte × breedte: ${v.lengte} × ${v.breedte} = ${(v.lengte * v.breedte).toFixed(2)}`;
             } else if (currentShape.id === 'driehoek') {
                 return `Stap 1: De basis is ${v.basis} cm en de hoogte is ${v.hoogte} cm.<br>Stap 2: Vermenigvuldig basis × hoogte: ${v.basis} × ${v.hoogte} = ${(v.basis * v.hoogte).toFixed(2)}<br>Stap 3: Deel door 2: ${(v.basis * v.hoogte)} ÷ 2 = ${((v.basis * v.hoogte) / 2).toFixed(2)}`;
+            } else if (currentShape.id === 'parallelogram') {
+                return `Stap 1: De basis is ${v.basis} cm en de hoogte is ${v.hoogte} cm.<br>Stap 2: Vermenigvuldig basis × hoogte: ${v.basis} × ${v.hoogte} = ${(v.basis * v.hoogte).toFixed(2)}`;
             } else if (currentShape.id === 'cirkel') {
                 return `Stap 1: De straal is ${v.straal} cm.<br>Stap 2: Bereken r × r: ${v.straal} × ${v.straal} = ${(v.straal * v.straal).toFixed(2)}<br>Stap 3: Vermenigvuldig met π (${pi}): ${pi} × ${(v.straal * v.straal).toFixed(2)} = ${(pi * v.straal * v.straal).toFixed(2)}`;
             } else if (currentShape.id === 'kubus') {
@@ -1800,6 +1847,13 @@
                 values.hoogte = hoogte;
                 questionText = `Bereken de oppervlakte van een driehoek met basis ${basis} cm en hoogte ${hoogte} cm.`;
                 correctAnswer = (basis * hoogte) / 2;
+            } else if (shape.id === 'parallelogram') {
+                const basis = generateRandomValue(4, 12);
+                const hoogte = generateRandomValue(2, 8);
+                values.basis = basis;
+                values.hoogte = hoogte;
+                questionText = `Bereken de oppervlakte van een parallellogram met basis ${basis} cm en hoogte ${hoogte} cm.`;
+                correctAnswer = basis * hoogte;
             } else if (shape.id === 'cirkel') {
                 const straal = generateRandomValue(2, 8);
                 values.straal = straal;
@@ -1880,6 +1934,22 @@
                     <line x1="10" y1="25" x2="20" y2="35" stroke="${color}" stroke-width="2"/>
                     <line x1="10" y1="${25+b}" x2="20" y2="${15+b}" stroke="${color}" stroke-width="2"/>
                     <text x="5" y="${25+b/2+5}" text-anchor="middle" fill="${color}" font-weight="bold" font-size="11" transform="rotate(-90, 5, ${25+b/2+5})">${values.breedte} cm</text>
+                </svg>`;
+            } else if (shape.id === 'parallelogram') {
+                const l = Math.min(values.basis * 14, 160);
+                const h = Math.min(values.hoogte * 12, 100);
+                const slant = Math.min(Math.round(h * 0.4), 30);
+                const svgW = l + slant + 40;
+                const svgH = h + 50;
+                const bx1 = 20, by = h + 20, bx2 = 20 + l;
+                const tx1 = 20 + slant, ty = 20, tx2 = 20 + slant + l;
+                return `<svg viewBox="0 0 ${svgW} ${svgH}">
+                    <polygon points="${bx1},${by} ${bx2},${by} ${tx2},${ty} ${tx1},${ty}" fill="white" opacity="0.2"/>
+                    <polygon points="${bx1},${by} ${bx2},${by} ${tx2},${ty} ${tx1},${ty}" fill="none" stroke="white" stroke-width="2"/>
+                    <line x1="${tx1}" y1="${ty}" x2="${tx1}" y2="${by}" stroke="white" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.7"/>
+                    <polyline points="${tx1},${by-9} ${tx1+9},${by-9} ${tx1+9},${by}" fill="none" stroke="white" stroke-width="1.5" opacity="0.7"/>
+                    <text x="${Math.round((bx1+bx2)/2)}" y="${by+16}" text-anchor="middle" fill="white" font-weight="bold" font-size="12">${values.basis} cm</text>
+                    <text x="${tx1+6}" y="${Math.round((ty+by)/2)+4}" text-anchor="start" fill="white" font-weight="bold" font-size="12">${values.hoogte} cm</text>
                 </svg>`;
             } else if (shape.id === 'driehoek') {
                 const bas = Math.min(values.basis * 12, 180);
@@ -2181,6 +2251,8 @@
                 return `${v.lengte} × ${v.breedte} = ${question.correctAnswer.toFixed(2)}`;
             } else if (currentShape.id === 'driehoek') {
                 return `(${v.basis} × ${v.hoogte}) ÷ 2 = ${question.correctAnswer.toFixed(2)}`;
+            } else if (currentShape.id === 'parallelogram') {
+                return `${v.basis} × ${v.hoogte} = ${question.correctAnswer.toFixed(2)}`;
             } else if (currentShape.id === 'cirkel') {
                 return `π × ${v.straal} × ${v.straal} = ${question.correctAnswer.toFixed(2)}`;
             } else if (currentShape.id === 'kubus') {
@@ -2211,6 +2283,8 @@
                 return `Stap 1: De lengte is ${v.lengte} cm en de breedte is ${v.breedte} cm.<br>Stap 2: Vermenigvuldig lengte × breedte: ${v.lengte} × ${v.breedte} = ${(v.lengte * v.breedte).toFixed(2)}`;
             } else if (currentShape.id === 'driehoek') {
                 return `Stap 1: De basis is ${v.basis} cm en de hoogte is ${v.hoogte} cm.<br>Stap 2: Vermenigvuldig basis × hoogte: ${v.basis} × ${v.hoogte} = ${(v.basis * v.hoogte).toFixed(2)}<br>Stap 3: Deel door 2: ${(v.basis * v.hoogte)} ÷ 2 = ${((v.basis * v.hoogte) / 2).toFixed(2)}`;
+            } else if (currentShape.id === 'parallelogram') {
+                return `Stap 1: De basis is ${v.basis} cm en de hoogte is ${v.hoogte} cm.<br>Stap 2: Vermenigvuldig basis × hoogte: ${v.basis} × ${v.hoogte} = ${(v.basis * v.hoogte).toFixed(2)}`;
             } else if (currentShape.id === 'cirkel') {
                 return `Stap 1: De straal is ${v.straal} cm.<br>Stap 2: Bereken r × r: ${v.straal} × ${v.straal} = ${(v.straal * v.straal).toFixed(2)}<br>Stap 3: Vermenigvuldig met π (${pi}): ${pi} × ${(v.straal * v.straal).toFixed(2)} = ${(pi * v.straal * v.straal).toFixed(2)}`;
             } else if (currentShape.id === 'kubus') {

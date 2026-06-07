@@ -1397,14 +1397,22 @@
                     formula: '(lengte × breedte × hoogte) ÷ 3',
                     calculate: (v) => (v.lengte * v.breedte * v.hoogte) / 3,
                     termDiagram: `
-                        <svg viewBox="0 0 200 200">
-                            <polygon points="20,160 180,160 180,160" fill="#9B59B6" opacity="0.3"/>
-                            <polygon points="100,20 20,160 180,160" fill="#9B59B6" opacity="0.5"/>
-                            <polygon points="100,20 20,160 100,160 180,160" fill="none" stroke="#9B59B6" stroke-width="3"/>
-                            <line x1="100" y1="20" x2="100" y2="160" stroke="#8E44AD" stroke-width="2" stroke-dasharray="4,3"/>
-                            <text x="100" y="15" text-anchor="middle" fill="#9B59B6" font-weight="bold" font-size="11">top</text>
-                            <text x="100" y="180" text-anchor="middle" fill="#9B59B6" font-weight="bold" font-size="10">6 × 4 cm</text>
-                            <text x="125" y="90" text-anchor="middle" fill="#8E44AD" font-weight="bold" font-size="10">5 cm</text>
+                        <svg viewBox="0 0 210 200">
+                            <polygon points="25,168 120,168 148,148 53,148" fill="#9B59B6" opacity="0.15"/>
+                            <polygon points="25,168 120,168 87,65" fill="#9B59B6" opacity="0.45"/>
+                            <polygon points="120,168 148,148 87,65" fill="#7D3C98" opacity="0.6"/>
+                            <polygon points="25,168 120,168 87,65" fill="none" stroke="#9B59B6" stroke-width="2.5"/>
+                            <polygon points="120,168 148,148 87,65" fill="none" stroke="#7D3C98" stroke-width="2.5"/>
+                            <line x1="25" y1="168" x2="120" y2="168" stroke="#9B59B6" stroke-width="2.5"/>
+                            <line x1="120" y1="168" x2="148" y2="148" stroke="#7D3C98" stroke-width="2.5"/>
+                            <line x1="53" y1="148" x2="25" y2="168" stroke="#9B59B6" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.7"/>
+                            <line x1="53" y1="148" x2="148" y2="148" stroke="#9B59B6" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.7"/>
+                            <line x1="53" y1="148" x2="87" y2="65" stroke="#9B59B6" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.7"/>
+                            <line x1="87" y1="65" x2="87" y2="158" stroke="#8E44AD" stroke-width="2" stroke-dasharray="5,3"/>
+                            <text x="73" y="185" text-anchor="middle" fill="#9B59B6" font-weight="bold" font-size="11">lengte = 6 cm</text>
+                            <text x="134" y="155" text-anchor="middle" fill="#7D3C98" font-weight="bold" font-size="10">4 cm</text>
+                            <text x="97" y="115" text-anchor="start" fill="#8E44AD" font-weight="bold" font-size="11">5 cm</text>
+                            <text x="87" y="59" text-anchor="middle" fill="#9B59B6" font-weight="bold" font-size="11">top</text>
                         </svg>
                     `,
                     termInfo: {
@@ -1424,7 +1432,7 @@
                         { title: 'Voorbeeld', content: 'Lengte 6 cm, breedte 4 cm, hoogte 5 cm: (6 × 4 × 5) ÷ 3 = 40 cm³', formula: '40 cm³' },
                         { title: 'Waarom delen door 3?', content: 'Een piramide past precies 3 keer in een blok met dezelfde lengte, breedte en hoogte! Daarom nemen we maar 1/3 van de blok inhoud. 🔺' }
                     ],
-                    svg: `<polygon points="50,15 90,85 10,85" fill="#9B59B6"/><polygon points="50,15 90,85 50,85" fill="#8E44AD"/><polygon points="50,15 10,85 50,85" fill="#7D3C98"/><text x="50" y="60" text-anchor="middle" fill="white" font-size="9" font-weight="bold">1/3</text>`
+                    svg: `<polygon points="8,85 70,85 88,67 26,67" fill="#9B59B6" opacity="0.2"/><polygon points="8,85 70,85 48,18" fill="#9B59B6"/><polygon points="70,85 88,67 48,18" fill="#7D3C98"/><line x1="26" y1="67" x2="8" y2="85" stroke="#7D3C98" stroke-width="1" stroke-dasharray="3,2"/><line x1="26" y1="67" x2="88" y2="67" stroke="#7D3C98" stroke-width="1" stroke-dasharray="3,2"/><line x1="26" y1="67" x2="48" y2="18" stroke="#7D3C98" stroke-width="1" stroke-dasharray="3,2"/><text x="42" y="65" text-anchor="middle" fill="white" font-size="9" font-weight="bold">1/3</text>`
                 },
                 {
                     id: 'bol',
@@ -1932,16 +1940,35 @@
                     <text x="${r+25}" y="${30+h+r*0.3+15}" text-anchor="middle" fill="${color}" font-weight="bold" font-size="11">r = ${values.straal} cm</text>
                 </svg>`;
             } else if (shape.id === 'piramide') {
-                const l = Math.min(values.lengte * 10, 120);
-                const b = Math.min(values.breedte * 12, 80);
-                const h = Math.min(values.hoogte * 10, 100);
-                return `<svg viewBox="0 0 ${l+40} ${h+b+40}">
-                    <polygon points="${20+l/2},20 20,${20+h+b} ${20+l},${20+h+b}" fill="${color}" opacity="0.3"/>
-                    <polygon points="${20+l/2},20 20,${20+h+b} ${20+l},${20+h+b}" fill="none" stroke="${color}" stroke-width="3"/>
-                    <line x1="${20+l/2}" y1="20" x2="${20+l/2}" y2="${20+h+b}" stroke="${color}" stroke-width="2" stroke-dasharray="4,3"/>
-                    <text x="${20+l/2}" y="15" text-anchor="middle" fill="${color}" font-weight="bold" font-size="11">top</text>
-                    <text x="${20+l/2}" y="${35+h+b}" text-anchor="middle" fill="${color}" font-weight="bold" font-size="10">${values.lengte} × ${values.breedte} cm</text>
-                    <text x="${20+l/2+15}" y="${20+h/2+b/2}" text-anchor="middle" fill="${color}" font-weight="bold" font-size="10">${values.hoogte} cm</text>
+                const scale = Math.min(12, 100 / Math.max(values.lengte, values.hoogte));
+                const lP = Math.round(values.lengte * scale);
+                const hP = Math.round(values.hoogte * scale);
+                const bOff = Math.round(values.breedte * scale * 0.3);
+                const bOffY = Math.round(values.breedte * scale * 0.18);
+                const pad = 45;
+                const svgW = pad + lP + bOff + 45;
+                const svgH = hP + bOffY + 55;
+                const FLx = pad, FLy = hP + bOffY + 20;
+                const FRx = pad + lP, FRy = hP + bOffY + 20;
+                const BRx = pad + lP + bOff, BRy = hP + 20;
+                const BLx = pad + bOff, BLy = hP + 20;
+                const cx = Math.round((FLx + FRx + BRx + BLx) / 4);
+                const cy = Math.round((FLy + FRy + BRy + BLy) / 4);
+                const ax = cx, ay = cy - hP;
+                return `<svg viewBox="0 0 ${svgW} ${svgH}">
+                    <polygon points="${FLx},${FLy} ${FRx},${FRy} ${BRx},${BRy} ${BLx},${BLy}" fill="white" opacity="0.1"/>
+                    <polygon points="${FLx},${FLy} ${FRx},${FRy} ${ax},${ay}" fill="white" opacity="0.25"/>
+                    <polygon points="${FRx},${FRy} ${BRx},${BRy} ${ax},${ay}" fill="white" opacity="0.15"/>
+                    <polygon points="${FLx},${FLy} ${FRx},${FRy} ${ax},${ay}" fill="none" stroke="white" stroke-width="2"/>
+                    <polygon points="${FRx},${FRy} ${BRx},${BRy} ${ax},${ay}" fill="none" stroke="white" stroke-width="2"/>
+                    <polygon points="${FLx},${FLy} ${FRx},${FRy} ${BRx},${BRy} ${BLx},${BLy}" fill="none" stroke="white" stroke-width="2"/>
+                    <line x1="${BLx}" y1="${BLy}" x2="${FLx}" y2="${FLy}" stroke="white" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.5"/>
+                    <line x1="${BLx}" y1="${BLy}" x2="${BRx}" y2="${BRy}" stroke="white" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.5"/>
+                    <line x1="${BLx}" y1="${BLy}" x2="${ax}" y2="${ay}" stroke="white" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.5"/>
+                    <line x1="${ax}" y1="${ay}" x2="${ax}" y2="${cy}" stroke="white" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.5"/>
+                    <text x="${Math.round((FLx+FRx)/2)}" y="${FLy+16}" text-anchor="middle" fill="white" font-weight="bold" font-size="12">${values.lengte} cm</text>
+                    <text x="${Math.round((FRx+BRx)/2)+2}" y="${Math.round((FRy+BRy)/2)+4}" text-anchor="start" fill="white" font-weight="bold" font-size="12">${values.breedte} cm</text>
+                    <text x="${ax+6}" y="${Math.round((ay+cy)/2)+4}" text-anchor="start" fill="white" font-weight="bold" font-size="12">${values.hoogte} cm</text>
                 </svg>`;
             } else if (shape.id === 'bol') {
                 const r = Math.min(values.straal * 10, 80);

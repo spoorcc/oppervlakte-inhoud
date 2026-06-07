@@ -1079,6 +1079,8 @@
         <p style="margin-top: 10px; font-size: 0.85rem;">Gemaakt door Loek & Thieme</p>
     </footer>
 
+    <div id="mascot" class="mascot hidden"></div>
+
     <script>
         const shapes = {
             oppervlakte: [
@@ -2072,7 +2074,7 @@
                         <h4>❌ Niet helemaal goed</h4>
                         <p>Probeer het nog eens! Je hebt nog ${chances} ${chances === 1 ? 'poging' : 'pogingen'}.</p>
                     `;
-                    showMascot(getRandomMessage('sad'), "sad");
+                    showMascot(getTipForShape(), "sad");
                 } else {
                     questionAnswered = true;
                     document.getElementById('answerInput').disabled = true;
@@ -2087,7 +2089,7 @@
                     setTimeout(() => document.getElementById('nextQBtn')?.focus(), 100);
                     
                     addSolvedQuestion(q, q.correctAnswer, false);
-                    showMascot("Niet getrouwd blijven! Oefenen maakt perfect! 💪", "sad");
+                    showMascot("Niet getreurd! " + getTipForShape(), "sad");
                 }
             }
         }
@@ -2239,6 +2241,23 @@
             "Niet opgeven! 🌈",
             "Elke dag een beetje beter! 🚀"
         ];
+
+        function getTipForShape() {
+            const tips = {
+                vierkant:  ["Tip: zijde × zijde! 📐", "Vermenigvuldig de zijde met zichzelf! ✏️"],
+                rechthoek: ["Tip: lengte × breedte! 📏", "De lange kant × de korte kant! ✏️"],
+                driehoek:  ["Tip: (basis × hoogte) ÷ 2 — de 2 niet vergeten! 📐", "Een driehoek is de helft van een rechthoek! ÷2"],
+                cirkel:    ["Tip: π × straal × straal! 🔵", "Straal = middellijn ÷ 2, dan kwadraat! ✏️"],
+                kubus:     ["Tip: zijde × zijde × zijde! 📦", "Bij een kubus zijn alle kanten gelijk! ✏️"],
+                blok:      ["Tip: lengte × breedte × hoogte! 📦", "Drie maten vermenigvuldigen! ✏️"],
+                cilinder:  ["Tip: π × straal² × hoogte! 🥫", "Straal = diameter ÷ 2, dan kwadraat × hoogte! ✏️"],
+                piramide:  ["Tip: (grondvlak × hoogte) ÷ 3 — de 3 niet vergeten! 🔺", "Een piramide is ⅓ van een blok! ÷3"],
+                bol:       ["Tip: (4/3) × π × straal³! 🌐", "Straal = diameter ÷ 2, dan tot de derde macht! ✏️"],
+            };
+            const shapeTips = currentShape && tips[currentShape.id];
+            if (shapeTips) return shapeTips[Math.floor(Math.random() * shapeTips.length)];
+            return sadMessages[Math.floor(Math.random() * sadMessages.length)];
+        }
 
         const completedMessages = [
             "Wow! Je hebt deze vorm geleerd! 🏆",

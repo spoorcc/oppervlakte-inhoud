@@ -2541,8 +2541,17 @@
                     ctx.beginPath();
                     ctx.ellipse(0, 0, bird.width/2, bird.width/6, 0, 0, Math.PI * 2);
                     ctx.stroke();
+                } else if (shape.id === 'parallelogram') {
+                    const pw = bird.width / 2, ph = bird.height / 3, slant = 9;
+                    ctx.beginPath();
+                    ctx.moveTo(-pw + slant, -ph);
+                    ctx.lineTo(pw + slant, -ph);
+                    ctx.lineTo(pw - slant, ph);
+                    ctx.lineTo(-pw - slant, ph);
+                    ctx.closePath();
+                    ctx.fill();
                 }
-                
+
                 ctx.fillStyle = 'white';
                 ctx.beginPath();
                 ctx.arc(6, -4, 5, 0, Math.PI * 2);

@@ -2187,14 +2187,17 @@
                 currentQuestion = generateQuestion();
                 attempts++;
             } while (hasUsedValues() && attempts < 50);
-            
+
+            usedValues.push([...Object.values(currentQuestion.values)]);
+            if (usedValues.length > 5) usedValues.shift();
+
             renderCurrentQuestion();
         }
 
         function hasUsedValues() {
             const currentValues = Object.values(currentQuestion.values);
-            return usedValues.some(used => 
-                used.length === currentValues.length && 
+            return usedValues.some(used =>
+                used.length === currentValues.length &&
                 used.every((v, i) => v === currentValues[i])
             );
         }

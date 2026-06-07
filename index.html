@@ -2090,12 +2090,17 @@
             const list = document.getElementById('solvedList');
             const calcText = getCalculationText(question);
             const stepsText = getDetailedSteps(question);
-            const attempts = currentQuestionAttempts;
-            
+            const attempts = wasCorrect ? currentQuestionAttempts + 1 : currentQuestionAttempts;
+
+            function attemptsLabel(n) {
+                if (n === 1) return 'in 1x goed!';
+                return `in ${n}x goed!`;
+            }
+
             const div = document.createElement('div');
             div.className = 'solved-question' + (wasCorrect ? '' : ' wrong');
             div.innerHTML = `
-                <h5>${wasCorrect ? '✅' : '❌'} ${question.questionText} <span style="float:right; font-size:0.85rem; color: ${attempts > 1 ? '#D68910' : '#00B894'}">(${attempts} ${attempts === 1 ? 'poging' : 'pogingen'})</span></h5>
+                <h5>${wasCorrect ? '✅' : '❌'} ${question.questionText} <span style="float:right; font-size:0.85rem; color: ${attempts > 1 ? '#D68910' : '#00B894'}">(${wasCorrect ? attemptsLabel(attempts) : attempts + (attempts === 1 ? ' poging' : ' pogingen')})</span></h5>
                 <div class="answer">${answer.toFixed(2)} ${currentTab === 'oppervlakte' ? 'cm²' : 'cm³'}</div>
                 <div class="calculation">${calcText}</div>
                 ${!wasCorrect ? `<div class="steps-explanation">${stepsText}</div>` : ''}

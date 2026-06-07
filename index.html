@@ -2372,11 +2372,29 @@
                     ctx.lineTo(-bird.width/2, bird.height/2);
                     ctx.closePath();
                     ctx.fill();
+                } else if (shape.id === 'cirkel') {
+                    ctx.beginPath();
+                    ctx.arc(0, 0, bird.width/2, 0, Math.PI * 2);
+                    ctx.fill();
+                } else if (shape.id === 'kubus') {
+                    ctx.fillRect(-bird.width/2, -bird.height/2, bird.width, bird.height);
+                } else if (shape.id === 'blok') {
+                    ctx.fillRect(-22, -14, 44, 28);
+                } else if (shape.id === 'cilinder') {
+                    ctx.beginPath();
+                    ctx.arc(0, 0, bird.width/2, 0, Math.PI * 2);
+                    ctx.fill();
+                } else if (shape.id === 'piramide') {
+                    ctx.beginPath();
+                    ctx.moveTo(0, -bird.height/2);
+                    ctx.lineTo(bird.width/2, bird.height/2);
+                    ctx.lineTo(-bird.width/2, bird.height/2);
+                    ctx.closePath();
+                    ctx.fill();
                 } else if (shape.id === 'bol') {
                     ctx.beginPath();
                     ctx.arc(0, 0, bird.width/2, 0, Math.PI * 2);
                     ctx.fill();
-                    // Draw equator
                     ctx.strokeStyle = 'white';
                     ctx.lineWidth = 1;
                     ctx.beginPath();

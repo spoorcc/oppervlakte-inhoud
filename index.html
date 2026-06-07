@@ -1558,37 +1558,19 @@
             const mascot = document.getElementById('mascot');
             if (!mascot) return;
             
-            let svg = '';
-            if (type === 'happy') {
-                svg = `<svg viewBox="0 0 100 100">
-                    <circle cx="50" cy="50" r="45" fill="#FDCB6E"/>
-                    <circle cx="35" cy="40" r="8" fill="#2D3436"/>
-                    <circle cx="65" cy="40" r="8" fill="#2D3436"/>
-                    <circle cx="37" cy="38" r="3" fill="white"/>
-                    <circle cx="67" cy="38" r="3" fill="white"/>
-                    <ellipse cx="50" cy="60" rx="15" ry="10" fill="#E17055"/>
-                    <path d="M 30 75 Q 50 85 70 75" stroke="#2D3436" stroke-width="3" fill="none"/>
-                </svg>`;
-            } else if (type === 'sad') {
-                svg = `<svg viewBox="0 0 100 100">
-                    <circle cx="50" cy="50" r="45" fill="#74B9FF"/>
-                    <circle cx="35" cy="45" r="8" fill="#2D3436"/>
-                    <circle cx="65" cy="45" r="8" fill="#2D3436"/>
-                    <circle cx="37" cy="43" r="3" fill="white"/>
-                    <circle cx="67" cy="43" r="3" fill="white"/>
-                    <ellipse cx="50" cy="65" rx="10" ry="5" fill="#2D3436"/>
-                    <path d="M 30 75 Q 50 65 70 75" stroke="#2D3436" stroke-width="3" fill="none"/>
-                </svg>`;
-            } else {
-                svg = `<svg viewBox="0 0 100 100">
+            const mouth = type === 'happy'
+                ? 'M 30 72 Q 50 86 70 72'
+                : type === 'sad'
+                ? 'M 30 76 Q 50 62 70 76'
+                : 'M 35 70 Q 50 78 65 70';
+            const svg = `<svg viewBox="0 0 100 100">
                     <circle cx="50" cy="50" r="45" fill="#6C5CE7"/>
                     <circle cx="32" cy="40" r="8" fill="white"/>
                     <circle cx="68" cy="40" r="8" fill="white"/>
                     <circle cx="34" cy="40" r="4" fill="#2D3436"/>
                     <circle cx="70" cy="40" r="4" fill="#2D3436"/>
-                    <path d="M 35 70 Q 50 80 65 70" stroke="#2D3436" stroke-width="4" fill="none" stroke-linecap="round"/>
+                    <path d="${mouth}" stroke="#2D3436" stroke-width="4" fill="none" stroke-linecap="round"/>
                 </svg>`;
-            }
             
             if (!mascot.querySelector('svg')) {
                 mascot.innerHTML = svg;
